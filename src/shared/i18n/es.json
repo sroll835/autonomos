@@ -1,0 +1,132 @@
+{
+  "common": {
+    "loading": "Cargando...",
+    "error": "Ocurrió un error",
+    "retry": "Intentar de nuevo",
+    "cancel": "Cancelar",
+    "confirm": "Confirmar",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "back": "Volver",
+    "next": "Siguiente",
+    "done": "Listo",
+    "search": "Buscar",
+    "filter": "Filtrar",
+    "noResults": "Sin resultados",
+    "seeAll": "Ver todos"
+  },
+  "auth": {
+    "login": "Iniciar sesión",
+    "register": "Crear cuenta",
+    "logout": "Cerrar sesión",
+    "email": "Correo electrónico",
+    "password": "Contraseña",
+    "confirmPassword": "Confirmar contraseña",
+    "name": "Nombre completo",
+    "phone": "Teléfono",
+    "forgotPassword": "¿Olvidaste tu contraseña?",
+    "noAccount": "¿No tienes cuenta?",
+    "hasAccount": "¿Ya tienes cuenta?",
+    "verifyPhone": "Verificar teléfono",
+    "otpSent": "Código enviado a tu teléfono",
+    "enterOtp": "Ingresa el código de 6 dígitos",
+    "resendOtp": "Reenviar código",
+    "roles": {
+      "CONDUCTOR": "Conductor",
+      "TALLER": "Taller",
+      "AUTONOMO": "Trabajador Autónomo",
+      "EMPRESA": "Empresa"
+    }
+  },
+  "home": {
+    "greeting": "Hola, {{name}}",
+    "location": "Tu ubicación",
+    "activeOrders": "Pedidos activos",
+    "nearbyProviders": "Proveedores cercanos",
+    "offers": "Ofertas del día",
+    "services": {
+      "autoparts": "Autopartes",
+      "mechanic": "Mecánico",
+      "tow": "Grúa",
+      "ambulance": "Ambulancia",
+      "logistics": "Logística",
+      "autonomous": "Autónomos"
+    }
+  },
+  "marketplace": {
+    "title": "Marketplace",
+    "searchPlaceholder": "Buscar autopartes...",
+    "filters": "Filtros",
+    "brand": "Marca",
+    "model": "Modelo",
+    "year": "Año",
+    "condition": "Condición",
+    "origin": "Origen",
+    "price": "Precio",
+    "nuevo": "Nuevo",
+    "usado": "Usado",
+    "nacional": "Nacional",
+    "importado": "Importado",
+    "addToCart": "Agregar al carrito",
+    "buyNow": "Comprar ahora",
+    "compareProviders": "Comparar proveedores",
+    "compatibility": "Compatibilidad",
+    "specifications": "Especificaciones",
+    "reviews": "Reseñas"
+  },
+  "services": {
+    "title": "Servicios",
+    "requestService": "Solicitar servicio",
+    "describeIssue": "Describe el problema",
+    "addPhotos": "Agregar fotos",
+    "nearbyProviders": "Proveedores cercanos",
+    "waitingQuote": "Esperando cotización",
+    "quote": "Cotización",
+    "acceptQuote": "Aceptar cotización",
+    "rejectQuote": "Rechazar cotización",
+    "tracking": "Seguimiento",
+    "chat": "Chat",
+    "rate": "Calificar servicio"
+  },
+  "emergency": {
+    "sos": "SOS",
+    "sosButton": "EMERGENCIA",
+    "confirm": "Manten presionado para confirmar ({{seconds}}s)",
+    "cancel": "Cancelar",
+    "dispatching": "Despachando ambulancia...",
+    "assigned": "Ambulancia asignada",
+    "eta": "Tiempo estimado: {{minutes}} min",
+    "callDriver": "Llamar al conductor",
+    "callContact": "Llamar contacto de emergencia",
+    "firstAid": "Primeros auxilios",
+    "history": "Historial de emergencias"
+  },
+  "cart": {
+    "title": "Carrito",
+    "empty": "Tu carrito está vacío",
+    "total": "Total",
+    "checkout": "Finalizar compra",
+    "deliveryAddress": "Dirección de entrega",
+    "paymentMethod": "Método de pago"
+  },
+  "profile": {
+    "title": "Mi Perfil",
+    "editProfile": "Editar perfil",
+    "vehicles": "Mis vehículos",
+    "addVehicle": "Agregar vehículo",
+    "paymentMethods": "Métodos de pago",
+    "emergencyContacts": "Contactos de emergencia",
+    "orderHistory": "Historial de pedidos",
+    "notifications": "Notificaciones",
+    "settings": "Configuración",
+    "documents": "Documentos",
+    "certifications": "Certificaciones"
+  },
+  "errors": {
+    "networkError": "Sin conexión a internet",
+    "serverError": "Error del servidor. Intenta más tarde",
+    "unauthorized": "Sesión expirada",
+    "notFound": "No encontrado",
+    "locationDenied": "Permiso de ubicación denegado"
+  }
+}

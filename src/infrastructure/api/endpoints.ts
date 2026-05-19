@@ -1,0 +1,56 @@
+/** Constantes de endpoints de la API */
+export const ENDPOINTS = {
+  AUTH: {
+    LOGIN: '/auth/login',
+    REGISTER: '/auth/register',
+    LOGOUT: '/auth/logout',
+    REFRESH: '/auth/refresh',
+    SEND_OTP: '/auth/otp/send',
+    VERIFY_OTP: '/auth/otp/verify',
+    FORGOT_PASSWORD: '/auth/forgot-password',
+    RESET_PASSWORD: '/auth/reset-password',
+    ME: '/auth/me',
+  },
+  USERS: {
+    PROFILE: '/users/profile',
+    UPDATE: '/users/profile',
+    VEHICLES: '/users/vehicles',
+    EMERGENCY_CONTACTS: '/users/emergency-contacts',
+    PAYMENT_METHODS: '/users/payment-methods',
+  },
+  PRODUCTS: {
+    LIST: '/products',
+    DETAIL: (id: string) => `/products/${id}`,
+    COMPARE: '/products/compare',
+    SEARCH: '/products/search',
+  },
+  ORDERS: {
+    CREATE: '/orders',
+    LIST: '/orders',
+    DETAIL: (id: string) => `/orders/${id}`,
+    CANCEL: (id: string) => `/orders/${id}/cancel`,
+    TRACK: (id: string) => `/orders/${id}/track`,
+  },
+  SERVICES: {
+    NEARBY_PROVIDERS: '/services/providers/nearby',
+    CREATE: '/services',
+    DETAIL: (id: string) => `/services/${id}`,
+    LIST: '/services',
+    ACCEPT_QUOTE: (id: string) => `/services/${id}/accept`,
+    REJECT_QUOTE: (id: string) => `/services/${id}/reject`,
+    COMPLETE: (id: string) => `/services/${id}/complete`,
+    CANCEL: (id: string) => `/services/${id}/cancel`,
+    MESSAGES: (id: string) => `/services/${id}/messages`,
+  },
+  EMERGENCY: {
+    CREATE: '/emergency',
+    DETAIL: (id: string) => `/emergency/${id}`,
+    UPDATE_LOCATION: (id: string) => `/emergency/${id}/location`,
+    CANCEL: (id: string) => `/emergency/${id}/cancel`,
+    HISTORY: '/emergency/history',
+  },
+  PROVIDERS: {
+    DETAIL: (id: string) => `/providers/${id}`,
+    REVIEWS: (id: string) => `/providers/${id}/reviews`,
+  },
+} as const;

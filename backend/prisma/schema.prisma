@@ -1,0 +1,250 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id             String    @id @default(uuid())
+  name           String
+  email          String    @unique
+  phone          String    @default("")
+  password       String
+  role           String    @default("CONDUCTOR")
+  avatar         String?
+  isVerified     Boolean   @default(false)
+  locationLat    Float?
+  locationLng    Float?
+  failedLogins   Int       @default(0)
+  lockedUntil    DateTime?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+
+  refreshTokens     RefreshToken[]
+  vehicles          Vehicle[]
+  emergencyContacts EmergencyContact[]
+  paymentMethods    PaymentMethod[]
+  orders            Order[]
+  serviceRequests   ServiceRequest[]
+  emergencies       Emergency[]
+  reviews           Review[]
+  documents         Document[]
+  notifications     Notification[]
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  token     String   @unique
+  userId    String
+  expiresAt DateTime
+  revoked   Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Vehicle {
+  id        String   @id @default(uuid())
+  userId    String
+  brand     String
+  model     String
+  year      Int
+  plate     String
+  color     String   @default("")
+  isPrimary Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model EmergencyContact {
+  id           String   @id @default(uuid())
+  userId       String
+  name         String
+  phone        String
+  relationship String
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model PaymentMethod {
+  id          String   @id @default(uuid())
+  userId      String
+  type        String
+  last4       String?
+  brand       String?
+  cardHolder  String?
+  expiry      String?
+  phone       String?
+  bank        String?
+  isDefault   Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Product {
+  id           String   @id @default(uuid())
+  name         String
+  brand        String
+  description  String
+  price        Float
+  discountPrice Float?
+  images       String   @default("[]")
+  category     String
+  condition    String   @default("NUEVO")
+  origin       String   @default("NACIONAL")
+  stock        Int      @default(0)
+  rating       Float    @default(0)
+  reviewCount  Int      @default(0)
+  providerId   String?
+  vehicleBrand String?
+  vehicleModel String?
+  vehicleYear  Int?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  orderItems   OrderItem[]
+}
+
+model Order {
+  id                String      @id @default(uuid())
+  userId            String
+  status            String      @default("PENDING")
+  paymentMethod     String
+  total             Float
+  deliveryAddress   String
+  deliveryLat       Float
+  deliveryLng       Float
+  estimatedDelivery DateTime?
+  trackingCode      String?     @unique @default(uuid())
+  providerPhone     String?
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  user      User        @relation(fields: [userId], references: [id])
+  items     OrderItem[]
+}
+
+model OrderItem {
+  id        String  @id @default(uuid())
+  orderId   String
+  productId String
+  quantity  Int
+  price     Float
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product Product @relation(fields: [productId], references: [id])
+}
+
+model Provider {
+  id             String   @id @default(uuid())
+  name           String
+  avatar         String?
+  serviceType    String
+  rating         Float    @default(5.0)
+  reviewCount    Int      @default(0)
+  isAvailable    Boolean  @default(true)
+  pricePerHour   Float?
+  certifications String   @default("[]")
+  vehicleBrand   String?
+  vehicleModel   String?
+  vehiclePlate   String?
+  phone          String?
+  locationLat    Float?
+  locationLng    Float?
+  createdAt      DateTime @default(now())
+
+  serviceRequests ServiceRequest[]
+  reviews         Review[]
+}
+
+model ServiceRequest {
+  id          String    @id @default(uuid())
+  userId      String
+  providerId  String?
+  serviceType String
+  status      String    @default("PENDING")
+  description String
+  locationLat Float
+  locationLng Float
+  address     String
+  quotedPrice Float?
+  finalPrice  Float?
+  rating      Int?
+  review      String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  user     User      @relation(fields: [userId], references: [id])
+  provider Provider? @relation(fields: [providerId], references: [id])
+  messages ChatMessage[]
+}
+
+model ChatMessage {
+  id          String   @id @default(uuid())
+  serviceId   String
+  senderId    String
+  senderName  String
+  senderAvatar String?
+  content     String
+  type        String   @default("TEXT")
+  read        Boolean  @default(false)
+  createdAt   DateTime @default(now())
+
+  service ServiceRequest @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+}
+
+model Emergency {
+  id               String    @id @default(uuid())
+  userId           String
+  type             String
+  status           String    @default("ACTIVE")
+  locationLat      Float
+  locationLng      Float
+  address          String
+  eta              Int?
+  ambulanceDriver  String?
+  ambulancePhone   String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  user User @relation(fields: [userId], references: [id])
+}
+
+model Review {
+  id           String   @id @default(uuid())
+  userId       String
+  providerId   String
+  serviceType  String
+  rating       Int
+  comment      String
+  createdAt    DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id])
+  provider Provider @relation(fields: [providerId], references: [id])
+}
+
+model Document {
+  id         String   @id @default(uuid())
+  userId     String
+  type       String
+  name       String
+  status     String   @default("PENDING")
+  url        String
+  uploadedAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  title     String
+  body      String
+  type      String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
