@@ -12,6 +12,8 @@ import { ServiceRepositoryImpl } from '../data/repositories/ServiceRepositoryImp
 import { LocationRepositoryImpl } from '../data/repositories/LocationRepositoryImpl';
 import { EmergencyRepositoryImpl } from '../data/repositories/EmergencyRepositoryImpl';
 
+import { TriggerSOSUseCase } from '../domain/usecases/emergency/TriggerSOSUseCase';
+
 const auth: IAuthRepository = new AuthRepositoryImpl();
 const order: IOrderRepository = new OrderRepositoryImpl();
 const product: IProductRepository = new ProductRepositoryImpl();
@@ -27,5 +29,8 @@ export const container = {
     service,
     location,
     emergency,
+  },
+  useCases: {
+    triggerSOS: new TriggerSOSUseCase(emergency),
   },
 };
