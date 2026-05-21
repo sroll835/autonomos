@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosError, AxiosRequestConfig } from 'axios';
-import * as SecureStore from 'expo-secure-store';
 import Constants from 'expo-constants';
+import { secureStorage, SECURE_KEYS } from '../storage/secureStorage';
 
 const BASE_URL = Constants.expoConfig?.extra?.apiUrl ?? 'http://localhost:6000/v1';
 
@@ -18,7 +18,7 @@ const apiClient: AxiosInstance = axios.create({
 // Interceptor de request: adjunta Bearer token automáticamente
 apiClient.interceptors.request.use(
   async (config) => {
-    const token = await SecureStore.getItemAsync('access_token');
+    const token = await secureStorage.get(SECURE_KEYS.ACCESS_TOKEN);
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -42,9 +42,15 @@ const processQueue = (error: unknown, token: string | null = null) => {
   failedQueue = [];
 };
 
-// Interceptor de response: refresca token si 401
+// Interceptor de response: desempaca wrapper { success, data } y refresca token si 401
 apiClient.interceptors.response.use(
-  (response) => response,
+  (response) => {
+    const body = response.data;
+    if (body && typeof body === 'object' && body.success === true && 'data' in body) {
+      response.data = body.data;
+    }
+    return response;
+  },
   async (error: AxiosError) => {
     const originalRequest = error.config as AxiosRequestConfig & { _retry?: boolean };
 
@@ -64,10 +70,12 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const refreshToken = await SecureStore.getItemAsync('refresh_token');
+        const refreshToken = await secureStorage.get(SECURE_KEYS.REFRESH_TOKEN);
         const response = await axios.post(`${BASE_URL}/auth/refresh`, { refreshToken });
-        const { accessToken } = response.data;
-        await SecureStore.setItemAsync('access_token', accessToken);
+        const body = response.data;
+        const tokens = body && body.success === true && body.data ? body.data : body;
+        const { accessToken } = tokens;
+        await secureStorage.set(SECURE_KEYS.ACCESS_TOKEN, accessToken);
         processQueue(null, accessToken);
         if (originalRequest.headers) {
           originalRequest.headers.Authorization = `Bearer ${accessToken}`;
@@ -75,8 +83,8 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        await SecureStore.deleteItemAsync('access_token');
-        await SecureStore.deleteItemAsync('refresh_token');
+        await secureStorage.delete(SECURE_KEYS.ACCESS_TOKEN);
+        await secureStorage.delete(SECURE_KEYS.REFRESH_TOKEN);
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
