@@ -1,8 +1,8 @@
 import { create } from 'zustand';
 import { Coordinates } from '../../domain/entities/User';
-import { LocationRepositoryImpl } from '../../data/repositories/LocationRepositoryImpl';
+import { container } from '../../di/container';
 
-const locationRepo = new LocationRepositoryImpl();
+const locationRepo = container.repos.location;
 
 interface LocationState {
   currentLocation: Coordinates | null;

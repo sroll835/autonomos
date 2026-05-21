@@ -2,10 +2,10 @@ import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { User } from '../../domain/entities/User';
-import { AuthRepositoryImpl } from '../../data/repositories/AuthRepositoryImpl';
 import { RegisterDTO } from '../../domain/repositories/IAuthRepository';
+import { container } from '../../di/container';
 
-const authRepo = new AuthRepositoryImpl();
+const authRepo = container.repos.auth;
 
 interface AuthState {
   user: User | null;
