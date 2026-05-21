@@ -1,5 +1,5 @@
-import apiClient from '../api/client';
-import { ENDPOINTS } from '../api/endpoints';
+import apiClient from '../../infrastructure/api/client';
+import { ENDPOINTS } from '../../infrastructure/api/endpoints';
 import { IServiceRepository, CreateServiceDTO } from '../../domain/repositories/IServiceRepository';
 import { ServiceRequest, ChatMessage } from '../../domain/entities/Service';
 import { Provider } from '../../domain/entities/Provider';

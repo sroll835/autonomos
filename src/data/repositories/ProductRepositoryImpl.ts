@@ -1,5 +1,5 @@
-import apiClient from '../api/client';
-import { ENDPOINTS } from '../api/endpoints';
+import apiClient from '../../infrastructure/api/client';
+import { ENDPOINTS } from '../../infrastructure/api/endpoints';
 import { IProductRepository, ProductFilters, PaginatedResult } from '../../domain/repositories/IProductRepository';
 import { Product } from '../../domain/entities/Product';
 

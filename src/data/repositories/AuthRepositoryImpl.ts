@@ -1,6 +1,6 @@
-import apiClient from '../api/client';
-import { ENDPOINTS } from '../api/endpoints';
-import { secureStorage, SECURE_KEYS } from '../storage/secureStorage';
+import apiClient from '../../infrastructure/api/client';
+import { ENDPOINTS } from '../../infrastructure/api/endpoints';
+import { secureStorage, SECURE_KEYS } from '../../infrastructure/storage/secureStorage';
 import { IAuthRepository, RegisterDTO } from '../../domain/repositories/IAuthRepository';
 import { User, AuthResponse, AuthTokens } from '../../domain/entities/User';
 

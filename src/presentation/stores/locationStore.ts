@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import { Coordinates } from '../../domain/entities/User';
-import { LocationRepositoryImpl } from '../../infrastructure/repositories/LocationRepositoryImpl';
+import { LocationRepositoryImpl } from '../../data/repositories/LocationRepositoryImpl';
 
 const locationRepo = new LocationRepositoryImpl();
 
