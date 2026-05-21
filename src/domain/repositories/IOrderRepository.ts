@@ -1,9 +1,14 @@
 import { Order, OrderStatus, PaymentMethod } from '../entities/Order';
-import { CartItem } from '../entities/Product';
 import { Coordinates } from '../entities/User';
 
+export interface CreateOrderItem {
+  productId: string;
+  quantity: number;
+  price: number;
+}
+
 export interface CreateOrderDTO {
-  items: CartItem[];
+  items: CreateOrderItem[];
   paymentMethod: PaymentMethod;
   deliveryAddress: string;
   deliveryLocation: Coordinates;

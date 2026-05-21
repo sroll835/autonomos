@@ -9,8 +9,7 @@ import { Skeleton } from '@/presentation/components/ui/Skeleton';
 import { formatCOP, formatDate } from '@/shared/utils/formatters';
 import { colors } from '@/presentation/theme/colors';
 import { Order, OrderStatus } from '@/domain/entities/Order';
-import apiClient from '@/infrastructure/api/client';
-import { ENDPOINTS } from '@/infrastructure/api/endpoints';
+import { container } from '@/di/container';
 
 const STATUS_CONFIG: Record<OrderStatus, { label: string; variant: 'success' | 'warning' | 'danger' | 'info' | 'default'; emoji: string }> = {
   PENDING:    { label: 'Pendiente',   variant: 'warning', emoji: '⏳' },
@@ -25,10 +24,7 @@ export default function OrdersScreen() {
   const router = useRouter();
   const { data: orders, isLoading } = useQuery<Order[]>({
     queryKey: ['orders'],
-    queryFn: async () => {
-      const { data } = await apiClient.get(ENDPOINTS.ORDERS.LIST);
-      return data;
-    },
+    queryFn: () => container.repos.order.getOrders(''),
   });
 
   return (

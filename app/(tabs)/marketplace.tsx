@@ -11,16 +11,12 @@ import { Badge } from '@/presentation/components/ui/Badge';
 import { ProductCardSkeleton } from '@/presentation/components/ui/Skeleton';
 import { colors } from '@/presentation/theme/colors';
 import { Product } from '@/domain/entities/Product';
-import apiClient from '@/infrastructure/api/client';
-import { ENDPOINTS } from '@/infrastructure/api/endpoints';
+import { container } from '@/di/container';
 
 const ITEMS_PER_PAGE = 10;
 
 const fetchProducts = async ({ pageParam = 1, search = '' }) => {
-  const { data } = await apiClient.get(ENDPOINTS.PRODUCTS.LIST, {
-    params: { page: pageParam, limit: ITEMS_PER_PAGE, search },
-  });
-  return data;
+  return container.repos.product.getProducts({ search }, pageParam, ITEMS_PER_PAGE);
 };
 
 function ProductCard({ product, onPress, onAddToCart }: { product: Product; onPress: () => void; onAddToCart: () => void }) {

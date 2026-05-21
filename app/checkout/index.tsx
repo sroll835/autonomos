@@ -11,8 +11,7 @@ import { Button } from '@/presentation/components/ui/Button';
 import { colors } from '@/presentation/theme/colors';
 import { formatCOP } from '@/shared/utils/formatters';
 import { PaymentMethod } from '@/domain/entities/Order';
-import apiClient from '@/infrastructure/api/client';
-import { ENDPOINTS } from '@/infrastructure/api/endpoints';
+import { container } from '@/di/container';
 
 const PAYMENT_OPTIONS: { method: PaymentMethod; label: string; emoji: string }[] = [
   { method: 'TARJETA', label: 'Tarjeta de crédito/débito', emoji: '💳' },
@@ -58,7 +57,7 @@ export default function CheckoutScreen() {
         { text: 'Confirmar', onPress: async () => {
           setPlacing(true);
           try {
-            const { data } = await apiClient.post(ENDPOINTS.ORDERS.CREATE, {
+            const data = await container.repos.order.createOrder({
               items: items.map((i) => ({ productId: i.product.id, quantity: i.quantity, price: i.product.discountPrice ?? i.product.price })),
               paymentMethod: selectedPayment,
               deliveryAddress: address,

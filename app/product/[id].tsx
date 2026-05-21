@@ -10,8 +10,7 @@ import { Skeleton } from '@/presentation/components/ui/Skeleton';
 import { formatCOP } from '@/shared/utils/formatters';
 import { colors } from '@/presentation/theme/colors';
 import { Product } from '@/domain/entities/Product';
-import apiClient from '@/infrastructure/api/client';
-import { ENDPOINTS } from '@/infrastructure/api/endpoints';
+import { container } from '@/di/container';
 
 export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -20,10 +19,7 @@ export default function ProductDetailScreen() {
 
   const { data: product, isLoading } = useQuery<Product>({
     queryKey: ['product', id],
-    queryFn: async () => {
-      const { data } = await apiClient.get(ENDPOINTS.PRODUCTS.DETAIL(id));
-      return data;
-    },
+    queryFn: () => container.repos.product.getProductById(id),
   });
 
   if (isLoading) {
