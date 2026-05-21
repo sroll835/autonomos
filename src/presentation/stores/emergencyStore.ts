@@ -1,8 +1,9 @@
 import { create } from 'zustand';
 import { Emergency, EmergencyContact, EmergencyType } from '../../domain/entities/Emergency';
 import { Coordinates } from '../../domain/entities/User';
-import apiClient from '../../infrastructure/api/client';
-import { ENDPOINTS } from '../../infrastructure/api/endpoints';
+import { container } from '../../di/container';
+
+const emergencyRepo = container.repos.emergency;
 
 interface EmergencyState {
   activeEmergency: Emergency | null;
@@ -55,7 +56,7 @@ export const useEmergencyStore = create<EmergencyState & EmergencyActions>()((se
   triggerSOS: async (type, location, address) => {
     set({ isLoading: true, error: null });
     try {
-      const { data } = await apiClient.post<Emergency>(ENDPOINTS.EMERGENCY.CREATE, { type, location, address });
+      const data = await emergencyRepo.create({ type, location, address });
       set({ activeEmergency: data, isLoading: false });
     } catch (e: unknown) {
       set({ error: (e as Error).message, isLoading: false });
@@ -66,7 +67,7 @@ export const useEmergencyStore = create<EmergencyState & EmergencyActions>()((se
   cancelEmergency: async (id) => {
     set({ isLoading: true });
     try {
-      await apiClient.post(ENDPOINTS.EMERGENCY.CANCEL(id));
+      await emergencyRepo.cancel(id);
       set({ activeEmergency: null, isLoading: false });
     } catch (e: unknown) {
       set({ error: (e as Error).message, isLoading: false });
@@ -74,20 +75,20 @@ export const useEmergencyStore = create<EmergencyState & EmergencyActions>()((se
   },
 
   updateLocation: async (id, location) => {
-    await apiClient.patch(ENDPOINTS.EMERGENCY.UPDATE_LOCATION(id), { location });
+    await emergencyRepo.updateLocation(id, location);
   },
 
   loadHistory: async () => {
     set({ isLoading: true });
     try {
-      const { data } = await apiClient.get<Emergency[]>(ENDPOINTS.EMERGENCY.HISTORY);
+      const data = await emergencyRepo.getHistory();
       set({ history: data, isLoading: false });
     } catch { set({ isLoading: false }); }
   },
 
   loadContacts: async () => {
     try {
-      const { data } = await apiClient.get<EmergencyContact[]>(ENDPOINTS.USERS.EMERGENCY_CONTACTS);
+      const data = await emergencyRepo.getContacts();
       set({ contacts: data });
     } catch { /* silencioso */ }
   },
