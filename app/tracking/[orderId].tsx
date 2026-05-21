@@ -10,8 +10,7 @@ import { colors } from '@/presentation/theme/colors';
 import { formatETA } from '@/shared/utils/formatters';
 import { Order } from '@/domain/entities/Order';
 import { Coordinates } from '@/domain/entities/User';
-import apiClient from '@/infrastructure/api/client';
-import { ENDPOINTS } from '@/infrastructure/api/endpoints';
+import { container } from '@/di/container';
 import { getSocket, SOCKET_EVENTS } from '@/infrastructure/socket/socketClient';
 
 const { height } = Dimensions.get('window');
@@ -24,10 +23,7 @@ export default function TrackingScreen() {
 
   const { data: order } = useQuery<Order>({
     queryKey: ['order', orderId],
-    queryFn: async () => {
-      const { data } = await apiClient.get(ENDPOINTS.ORDERS.TRACK(orderId));
-      return data;
-    },
+    queryFn: () => container.repos.order.trackOrder(orderId),
     refetchInterval: 30000,
   });
 

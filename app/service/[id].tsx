@@ -8,8 +8,7 @@ import { Button } from '@/presentation/components/ui/Button';
 import { Badge } from '@/presentation/components/ui/Badge';
 import { colors } from '@/presentation/theme/colors';
 import { Provider } from '@/domain/entities/Provider';
-import apiClient from '@/infrastructure/api/client';
-import { ENDPOINTS } from '@/infrastructure/api/endpoints';
+import { container } from '@/di/container';
 import { useLocationStore } from '@/presentation/stores/locationStore';
 
 export default function ServiceDetailScreen() {
@@ -22,10 +21,7 @@ export default function ServiceDetailScreen() {
 
   const { data: provider } = useQuery<Provider>({
     queryKey: ['provider', id],
-    queryFn: async () => {
-      const { data } = await apiClient.get(ENDPOINTS.PROVIDERS.DETAIL(id));
-      return data;
-    },
+    queryFn: () => container.repos.service.getProvider(id),
   });
 
   const handleRequest = async () => {
@@ -39,13 +35,13 @@ export default function ServiceDetailScreen() {
     }
     setIsRequesting(true);
     try {
-      const { data } = await apiClient.post(ENDPOINTS.SERVICES.CREATE, {
+      const data = await container.repos.service.createServiceRequest({
         serviceType: provider?.serviceType,
         providerId: id,
         description,
         location: currentLocation,
         address: currentAddress,
-      });
+      } as any);
       Toast.show({ type: 'success', text1: '¡Solicitud enviada!', text2: 'El proveedor responderá pronto' });
       router.replace(`/tracking/${data.id}` as never);
     } catch (e: unknown) {

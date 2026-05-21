@@ -65,6 +65,13 @@ export class AuthRepositoryImpl implements IAuthRepository {
     return data;
   }
 
+  async uploadAvatar(form: FormData): Promise<{ url: string }> {
+    const { data } = await apiClient.post<{ url: string }>(ENDPOINTS.USERS.AVATAR, form, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return data;
+  }
+
   private async _saveTokens(tokens: AuthTokens): Promise<void> {
     await Promise.all([
       secureStorage.set(SECURE_KEYS.ACCESS_TOKEN, tokens.accessToken),

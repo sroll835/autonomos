@@ -11,8 +11,7 @@ import { useLocationStore } from '@/presentation/stores/locationStore';
 import { formatDistance } from '@/shared/utils/formatters';
 import { colors } from '@/presentation/theme/colors';
 import { Provider, ServiceType } from '@/domain/entities/Provider';
-import apiClient from '@/infrastructure/api/client';
-import { ENDPOINTS } from '@/infrastructure/api/endpoints';
+import { container } from '@/di/container';
 
 const SERVICE_TABS: { type: ServiceType; label: string; emoji: string }[] = [
   { type: 'MECANICO',   label: 'Mecánicos',  emoji: '🔧' },
@@ -73,12 +72,7 @@ export default function ServicesScreen() {
 
   const { data: providers, isLoading } = useQuery<Provider[]>({
     queryKey: ['providers', activeTab, currentLocation],
-    queryFn: async () => {
-      const { data } = await apiClient.get(ENDPOINTS.SERVICES.NEARBY_PROVIDERS, {
-        params: { serviceType: activeTab, lat: currentLocation?.latitude, lng: currentLocation?.longitude },
-      });
-      return data;
-    },
+    queryFn: () => container.repos.service.getNearbyProviders(currentLocation!, activeTab),
     enabled: !!currentLocation,
   });
 

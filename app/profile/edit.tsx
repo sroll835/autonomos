@@ -8,7 +8,7 @@ import Toast from 'react-native-toast-message';
 import { useAuthStore } from '@/presentation/stores/authStore';
 import { Avatar } from '@/presentation/components/ui/Avatar';
 import { colors } from '@/presentation/theme/colors';
-import apiClient from '@/infrastructure/api/client';
+import { container } from '@/di/container';
 
 export default function EditProfileScreen() {
   const router = useRouter();
@@ -36,9 +36,7 @@ export default function EditProfileScreen() {
       try {
         const form = new FormData();
         form.append('file', { uri: result.assets[0].uri, type: 'image/jpeg', name: 'avatar.jpg' } as never);
-        const { data } = await apiClient.post<{ url: string }>('/users/avatar', form, {
-          headers: { 'Content-Type': 'multipart/form-data' },
-        });
+        const data = await container.repos.auth.uploadAvatar(form);
         setAvatar(data.url);
       } catch {
         setAvatar(result.assets[0].uri);

@@ -12,6 +12,7 @@ export interface IAuthRepository {
   resetPassword(token: string, password: string): Promise<void>;
   getCurrentUser(): Promise<User | null>;
   updateProfile(data: Partial<User>): Promise<User>;
+  uploadAvatar(form: FormData): Promise<{ url: string }>;
 }
 
 export interface RegisterDTO {

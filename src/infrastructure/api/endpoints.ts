@@ -14,6 +14,7 @@ export const ENDPOINTS = {
   USERS: {
     PROFILE: '/users/profile',
     UPDATE: '/users/profile',
+    AVATAR: '/users/avatar',
     VEHICLES: '/users/vehicles',
     EMERGENCY_CONTACTS: '/users/emergency-contacts',
     PAYMENT_METHODS: '/users/payment-methods',

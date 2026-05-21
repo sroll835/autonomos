@@ -13,6 +13,11 @@ export class ServiceRepositoryImpl implements IServiceRepository {
     return data;
   }
 
+  async getProvider(id: string): Promise<Provider> {
+    const { data } = await apiClient.get<Provider>(ENDPOINTS.PROVIDERS.DETAIL(id));
+    return data;
+  }
+
   async createServiceRequest(dto: CreateServiceDTO): Promise<ServiceRequest> {
     const { data } = await apiClient.post<ServiceRequest>(ENDPOINTS.SERVICES.CREATE, dto);
     return data;

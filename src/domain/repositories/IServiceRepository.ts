@@ -4,6 +4,7 @@ import { Coordinates } from '../entities/User';
 
 export interface CreateServiceDTO {
   serviceType: ServiceRequest['serviceType'];
+  providerId?: string;
   description: string;
   photos?: string[];
   location: Coordinates;
@@ -14,6 +15,7 @@ export interface CreateServiceDTO {
 /** Contrato del repositorio de servicios */
 export interface IServiceRepository {
   getNearbyProviders(location: Coordinates, serviceType: string): Promise<Provider[]>;
+  getProvider(id: string): Promise<Provider>;
   createServiceRequest(data: CreateServiceDTO): Promise<ServiceRequest>;
   getServiceRequest(id: string): Promise<ServiceRequest>;
   getUserServices(userId: string): Promise<ServiceRequest[]>;
