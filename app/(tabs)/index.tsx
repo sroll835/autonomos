@@ -108,17 +108,17 @@ export default function HomeScreen() {
               styles.serviceCard,
               {
                 width: SERVICE_CARD_SIZE,
-                backgroundColor: pressed ? theme.colors.surfaceRaised : theme.colors.surface,
-                borderColor: theme.colors.border,
+                backgroundColor: pressed ? '#E5E5E7' : theme.colors.cardLight,
+                borderColor: theme.colors.cardLightBorder,
                 borderRadius: radius.lg,
               },
             ]}
           >
-            <service.Icon size={28} color={theme.colors.chrome} strokeWidth={1.5} />
+            <service.Icon size={28} color={theme.colors.textOnLight} strokeWidth={1.5} />
             <Text
               style={[
                 typography.caption,
-                { color: theme.colors.textPrimary, marginTop: spacing.sm, textAlign: 'center' },
+                { color: theme.colors.textOnLight, marginTop: spacing.sm, textAlign: 'center' },
               ]}
             >
               {service.label}
@@ -135,20 +135,20 @@ export default function HomeScreen() {
         <View
           style={[
             styles.offerIconWrap,
-            { backgroundColor: theme.colors.surfaceRaised, borderColor: theme.colors.chrome },
+            { backgroundColor: '#0A0A0B', borderColor: theme.colors.chrome },
           ]}
         >
           <Tag size={20} color={theme.colors.chrome} strokeWidth={1.5} />
         </View>
         <View style={styles.offerContent}>
-          <Text style={[typography.h3, { color: theme.colors.textPrimary }]}>
+          <Text style={[typography.h3, { color: theme.colors.textOnLight }]}>
             Autopartes importadas
           </Text>
-          <Text style={[typography.body, { color: theme.colors.textSecondary, marginTop: spacing.xs }]}>
+          <Text style={[typography.body, { color: theme.colors.textOnLightSecondary, marginTop: spacing.xs }]}>
             Hasta 40% de descuento en repuestos seleccionados
           </Text>
         </View>
-        <ChevronRight size={18} color={theme.colors.textSecondary} strokeWidth={1.5} />
+        <ChevronRight size={18} color={theme.colors.textOnLightSecondary} strokeWidth={1.5} />
       </Card>
     </SafeScreen>
   );

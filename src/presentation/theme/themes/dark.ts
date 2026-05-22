@@ -30,6 +30,12 @@ export const darkTheme: Theme = {
     chromeMuted:     'rgba(192, 192, 197, 0.4)',
     chromeGlow:      'rgba(192, 192, 197, 0.08)',
 
+    // Cards claras (spotlight pattern — fondo negro void + cartas blancas)
+    cardLight:           '#F4F4F5',
+    cardLightBorder:     '#E5E5E7',
+    textOnLight:         '#0A0A0B',
+    textOnLightSecondary:'#5A5A5F',
+
     // CTA
     ctaPrimary:      '#FFFFFF',
     ctaPrimaryText:  '#0A0A0B',

@@ -42,6 +42,11 @@ export const lightTheme: Theme = {
     chromeMuted:     'rgba(58, 58, 63, 0.4)',
     chromeGlow:      'rgba(58, 58, 63, 0.08)',
 
+    cardLight:           '#FFFFFF',
+    cardLightBorder:     '#E5E5E7',
+    textOnLight:         '#0A0A0B',
+    textOnLightSecondary:'#5A5A5F',
+
     ctaPrimary:      '#0A0A0B',
     ctaPrimaryText:  '#F4F4F5',
 

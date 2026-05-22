@@ -8,45 +8,58 @@ interface CardProps {
   style?: ViewStyle;
   onPress?: () => void;
   padding?: number;
-  /** Eleva la card con sombra (úsalo para focos principales: modales, hero). Default false. */
-  elevated?: boolean;
+  /**
+   * `light` (default): blanco suave sobre dark stage — patrón spotlight luxury.
+   * `dark`: superficie oscura para casos donde se necesita continuidad con el bg negro.
+   */
+  variant?: 'light' | 'dark';
+  /** Si true añade shadow.spotlight (chrome glow en iOS/Web, elevation Android). */
+  glow?: boolean;
 }
 
 /**
- * Card — superficie de agrupación.
+ * Card — superficie spotlight sobre fondo dark.
  *
- * Default: background `surface`, border 1px `border`. Sin sombra.
- * elevated=true: añade `shadow.drop` (iOS shadow / Android elevation / Web boxShadow).
- * onPress: usa Pressable con overlay `pressed` semitransparente.
+ * Default `light`: bg #F4F4F5, border subtle, optional glow chrome.
+ * El TEXTO interior debe ir con theme.colors.textOnLight / textOnLightSecondary
+ * cuando variant es light. Iconos también en color oscuro.
+ *
+ * onPress: Pressable con tono ligeramente más oscuro al press (físico).
  */
 export const Card: React.FC<CardProps> = ({
   children,
   style,
   onPress,
   padding = spacing.lg,
-  elevated = false,
+  variant = 'light',
+  glow = false,
 }) => {
   const theme = useTheme();
 
+  const isLight = variant === 'light';
+  const bg = isLight ? theme.colors.cardLight : theme.colors.surface;
+  const borderColor = isLight ? theme.colors.cardLightBorder : theme.colors.border;
+  const pressedBg = isLight ? '#E5E5E7' : theme.colors.surfaceRaised;
+
   const baseStyle: ViewStyle = {
-    backgroundColor: theme.colors.surface,
-    borderColor: theme.colors.border,
+    backgroundColor: bg,
+    borderColor,
     borderWidth: 1,
     borderRadius: radius.lg,
     padding,
     overflow: 'hidden',
   };
 
-  const elevatedStyle: ViewStyle | undefined = elevated
+  const glowStyle: ViewStyle | undefined = glow
     ? (Platform.select({
         ios: {
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.4,
-          shadowRadius: 12,
+          shadowColor: theme.colors.chrome,
+          shadowOffset: { width: 0, height: 0 },
+          shadowOpacity: 0.18,
+          shadowRadius: 18,
         },
         android: { elevation: 6 },
-        web: { boxShadow: '0 4px 24px rgba(0, 0, 0, 0.5)' } as ViewStyle,
+        web: { boxShadow: `0 0 24px ${theme.colors.chromeGlow}` } as ViewStyle,
         default: {},
       }) as ViewStyle)
     : undefined;
@@ -57,16 +70,16 @@ export const Card: React.FC<CardProps> = ({
         onPress={onPress}
         style={({ pressed }) => [
           baseStyle,
-          elevatedStyle,
+          glowStyle,
           style,
-          pressed && { backgroundColor: theme.colors.surfaceRaised },
+          pressed && { backgroundColor: pressedBg },
         ]}
       >
         {children}
       </Pressable>
     );
   }
-  return <View style={[baseStyle, elevatedStyle, style]}>{children}</View>;
+  return <View style={[baseStyle, glowStyle, style]}>{children}</View>;
 };
 
 const styles = StyleSheet.create({});

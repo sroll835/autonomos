@@ -28,6 +28,12 @@ export interface ThemeColors {
   chromeMuted: string;
   chromeGlow: string;
 
+  // Cards claras sobre fondo dark (spotlight cards over dark stage)
+  cardLight: string;
+  cardLightBorder: string;
+  textOnLight: string;
+  textOnLightSecondary: string;
+
   // CTA
   ctaPrimary: string;
   ctaPrimaryText: string;
