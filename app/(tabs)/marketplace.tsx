@@ -16,7 +16,7 @@ import { container } from '@/di/container';
 const ITEMS_PER_PAGE = 10;
 
 const fetchProducts = async ({ pageParam = 1, search = '' }) => {
-  return container.repos.product.getProducts({ search }, pageParam, ITEMS_PER_PAGE);
+  return container.useCases.getProducts.execute({ search }, pageParam, ITEMS_PER_PAGE);
 };
 
 function ProductCard({ product, onPress, onAddToCart }: { product: Product; onPress: () => void; onAddToCart: () => void }) {

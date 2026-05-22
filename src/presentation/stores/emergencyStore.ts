@@ -56,7 +56,7 @@ export const useEmergencyStore = create<EmergencyState & EmergencyActions>()((se
   triggerSOS: async (type, location, address) => {
     set({ isLoading: true, error: null });
     try {
-      const data = await emergencyRepo.create({ type, location, address });
+      const data = await container.useCases.triggerSOS.execute(type, location, address);
       set({ activeEmergency: data, isLoading: false });
     } catch (e: unknown) {
       set({ error: (e as Error).message, isLoading: false });
