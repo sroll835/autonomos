@@ -11,7 +11,9 @@
     "lint": "expo lint"
   },
   "dependencies": {
+    "@expo-google-fonts/cormorant": "^0.4.2",
     "@expo-google-fonts/inter": "^0.4.2",
+    "@expo-google-fonts/montserrat": "^0.4.2",
     "@gorhom/bottom-sheet": "^4.6.3",
     "@hookform/resolvers": "^3.6.0",
     "@react-native-async-storage/async-storage": "1.23.1",

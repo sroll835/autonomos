@@ -2,12 +2,15 @@ import React, { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
+import { Cormorant_500Medium, Cormorant_600SemiBold } from '@expo-google-fonts/cormorant';
+import { Montserrat_400Regular, Montserrat_500Medium, Montserrat_600SemiBold } from '@expo-google-fonts/montserrat';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
 import { StatusBar } from 'expo-status-bar';
+import { ThemeProvider } from '@/presentation/theme/ThemeProvider';
 import '@/shared/i18n';
 
 // Mantiene el splash visible hasta que las fuentes carguen
@@ -22,10 +25,18 @@ const queryClient = new QueryClient({
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
+    // Inter — mantener mientras se migran pantallas. Borrar cuando ningún archivo lo use.
     Inter_400Regular,
     Inter_500Medium,
     Inter_600SemiBold,
     Inter_700Bold,
+    // Cormorant — display/headings (luxury serif)
+    Cormorant_500Medium,
+    Cormorant_600SemiBold,
+    // Montserrat — body/UI (sans-serif premium)
+    Montserrat_400Regular,
+    Montserrat_500Medium,
+    Montserrat_600SemiBold,
   });
 
   useEffect(() => {
@@ -37,9 +48,11 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <SafeAreaProvider>
+        <ThemeProvider>
         <QueryClientProvider client={queryClient}>
-          <StatusBar style="dark" />
-          <Stack screenOptions={{ headerShown: false }}>
+          <StatusBar style="light" />
+          {/* contentStyle bg hex literal: root layout no consume useTheme (vive bajo ThemeProvider). Paint between route transitions antes de que mount el screen. Mantener sincronizado con darkTheme.colors.background */}
+          <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#0A0A0B' } }}>
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="emergency/index" options={{ presentation: 'fullScreenModal' }} />
@@ -52,6 +65,7 @@ export default function RootLayout() {
           </Stack>
           <Toast />
         </QueryClientProvider>
+        </ThemeProvider>
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
