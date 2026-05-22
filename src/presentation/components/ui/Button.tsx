@@ -1,6 +1,8 @@
-import React from 'react';
-import { TouchableOpacity, Text, ActivityIndicator, StyleSheet, ViewStyle, TextStyle } from 'react-native';
-import { colors } from '../../theme/colors';
+import React, { useMemo } from 'react';
+import { Pressable, Text, ActivityIndicator, View, Platform, StyleSheet, ViewStyle, TextStyle } from 'react-native';
+import { useTheme } from '../../theme/ThemeProvider';
+import { typography } from '../../theme/tokens/typography';
+import { spacing, radius } from '../../theme/tokens/spacing';
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 type ButtonSize = 'sm' | 'md' | 'lg';
@@ -17,58 +19,129 @@ interface ButtonProps {
   fullWidth?: boolean;
 }
 
-/** Componente botón base con variantes y estado de carga */
+const HEIGHTS: Record<ButtonSize, number> = { sm: 36, md: 44, lg: 52 };
+
+/**
+ * Button — automotive luxury chiaroscuro.
+ *
+ * 4 variants:
+ *  - primary: CTA blanco sobre negro, glow chrome (iOS/Web; Android elevation)
+ *  - secondary: transparente, borde chrome
+ *  - ghost: transparente, sin borde, texto secundario
+ *  - danger: transparente, borde y texto en danger (apagado)
+ *
+ * RN puro: Pressable + pressed state via children-as-function.
+ * Glow via Platform.select — Android cae a elevation gris (limitación nativa documentada).
+ */
 export const Button: React.FC<ButtonProps> = ({
-  title, onPress, variant = 'primary', size = 'md',
-  isLoading = false, disabled = false, style, textStyle, fullWidth = false,
+  title,
+  onPress,
+  variant = 'primary',
+  size = 'md',
+  isLoading = false,
+  disabled = false,
+  style,
+  textStyle,
+  fullWidth = false,
 }) => {
+  const theme = useTheme();
   const isDisabled = disabled || isLoading;
+  const height = HEIGHTS[size];
+  const paddingHorizontal = size === 'sm' ? spacing.md : spacing.lg;
+
+  const v = useMemo(() => {
+    switch (variant) {
+      case 'primary':
+        return {
+          container: {
+            backgroundColor: theme.colors.ctaPrimary,
+            ...Platform.select({
+              ios: {
+                shadowColor: theme.colors.chrome,
+                shadowOffset: { width: 0, height: 0 },
+                shadowOpacity: 0.16,
+                shadowRadius: 20,
+              },
+              android: { elevation: 8 },
+              web: { boxShadow: `0 0 24px ${theme.colors.chromeGlow}` } as ViewStyle,
+              default: {},
+            }),
+          } as ViewStyle,
+          text: { color: theme.colors.ctaPrimaryText },
+          spinner: theme.colors.ctaPrimaryText,
+        };
+      case 'secondary':
+        return {
+          container: {
+            backgroundColor: 'transparent',
+            borderWidth: 1,
+            borderColor: theme.colors.chrome,
+          } as ViewStyle,
+          text: { color: theme.colors.textPrimary },
+          spinner: theme.colors.textPrimary,
+        };
+      case 'ghost':
+        return {
+          container: { backgroundColor: 'transparent' } as ViewStyle,
+          text: { color: theme.colors.textSecondary },
+          spinner: theme.colors.textSecondary,
+        };
+      case 'danger':
+        return {
+          container: {
+            backgroundColor: 'transparent',
+            borderWidth: 1,
+            borderColor: theme.colors.danger,
+          } as ViewStyle,
+          text: { color: theme.colors.danger },
+          spinner: theme.colors.danger,
+        };
+    }
+  }, [variant, theme]);
 
   return (
-    <TouchableOpacity
+    <Pressable
       onPress={onPress}
       disabled={isDisabled}
-      activeOpacity={0.8}
-      style={[
+      style={({ pressed }) => [
         styles.base,
-        styles[variant],
-        styles[`size_${size}`],
+        { height, paddingHorizontal, borderRadius: radius.md },
+        v.container,
         fullWidth && styles.fullWidth,
         isDisabled && styles.disabled,
+        pressed && !isDisabled && variant === 'primary' && { opacity: 0.88 },
         style,
       ]}
     >
-      {isLoading ? (
-        <ActivityIndicator color={variant === 'primary' ? colors.navy[500] : colors.primary[500]} size="small" />
-      ) : (
-        <Text style={[styles.text, styles[`text_${variant}`], styles[`textSize_${size}`], textStyle]}>
-          {title}
-        </Text>
+      {({ pressed }) => (
+        <>
+          {pressed && !isDisabled && variant !== 'primary' && (
+            <View
+              pointerEvents="none"
+              style={[
+                StyleSheet.absoluteFillObject,
+                { backgroundColor: theme.colors.pressed, borderRadius: radius.md },
+              ]}
+            />
+          )}
+          {isLoading ? (
+            <ActivityIndicator color={v.spinner} size="small" />
+          ) : (
+            <Text style={[typography.button, v.text, textStyle]}>{title}</Text>
+          )}
+        </>
       )}
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
 const styles = StyleSheet.create({
-  base: { borderRadius: 12, alignItems: 'center', justifyContent: 'center', flexDirection: 'row' },
+  base: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    flexDirection: 'row',
+    overflow: 'hidden',
+  },
   fullWidth: { width: '100%' },
-  disabled: { opacity: 0.5 },
-  // Variantes
-  primary: { backgroundColor: colors.primary[500] },
-  secondary: { backgroundColor: 'transparent', borderWidth: 1.5, borderColor: colors.primary[500] },
-  ghost: { backgroundColor: 'transparent' },
-  danger: { backgroundColor: colors.semantic.emergency },
-  // Tamaños
-  size_sm: { paddingVertical: 8, paddingHorizontal: 16, height: 36 },
-  size_md: { paddingVertical: 12, paddingHorizontal: 24, height: 48 },
-  size_lg: { paddingVertical: 16, paddingHorizontal: 32, height: 56 },
-  // Texto
-  text: { fontFamily: 'Inter_600SemiBold' },
-  text_primary: { color: colors.navy[500] },
-  text_secondary: { color: colors.primary[500] },
-  text_ghost: { color: colors.primary[500] },
-  text_danger: { color: colors.white },
-  textSize_sm: { fontSize: 13 },
-  textSize_md: { fontSize: 15 },
-  textSize_lg: { fontSize: 16 },
+  disabled: { opacity: 0.4 },
 });
