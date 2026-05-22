@@ -18,6 +18,13 @@ export const ENDPOINTS = {
     VEHICLES: '/users/vehicles',
     EMERGENCY_CONTACTS: '/users/emergency-contacts',
     PAYMENT_METHODS: '/users/payment-methods',
+    DOCUMENTS: '/users/documents',
+    REVIEWS: '/users/reviews',
+  },
+  NOTIFICATIONS: {
+    LIST: '/notifications',
+    MARK_READ: (id: string) => `/notifications/${id}/read`,
+    MARK_ALL_READ: '/notifications/read-all',
   },
   PRODUCTS: {
     LIST: '/products',
