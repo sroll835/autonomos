@@ -25,8 +25,10 @@ const queryClient = new QueryClient({
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
-    // Inter — PUENTE temporal. TODO: borrar al final del grupo 6 del rework visual.
-    // Verificación: `grep -r "Inter_" app/ src/` debe dar 0 matches antes de eliminar.
+    // Inter — PUENTE temporal. TODO: borrar al CIERRE del grupo 3 del rework visual.
+    // Cuando los 8 componentes compartidos (ui/* + layout/*) usen Cormorant/Montserrat,
+    // los screens sin migrar caen a fuente de sistema — neutra, no rompe dark premium.
+    // Verificación previa: `grep -r "Inter_" src/presentation/components/` debe dar 0.
     Inter_400Regular,
     Inter_500Medium,
     Inter_600SemiBold,
