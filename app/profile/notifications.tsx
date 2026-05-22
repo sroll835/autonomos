@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { Card } from '@/presentation/components/ui/Card';
 import { colors } from '@/presentation/theme/colors';
-import apiClient from '@/infrastructure/api/client';
+import { container } from '@/di/container';
 
 interface Notification {
   id: string;
@@ -35,19 +35,16 @@ export default function NotificationsScreen() {
 
   const { data: notifications, isLoading } = useQuery<Notification[]>({
     queryKey: ['notifications'],
-    queryFn: async () => {
-      const { data } = await apiClient.get('/notifications');
-      return data;
-    },
+    queryFn: () => container.repos.notifications.list(),
   });
 
   const markReadMutation = useMutation({
-    mutationFn: async (id: string) => apiClient.patch(`/notifications/${id}/read`),
+    mutationFn: (id: string) => container.repos.notifications.markRead(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['notifications'] }),
   });
 
   const markAllRead = async () => {
-    await apiClient.patch('/notifications/read-all');
+    await container.repos.notifications.markAllRead();
     qc.invalidateQueries({ queryKey: ['notifications'] });
   };
 
