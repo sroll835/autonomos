@@ -6,7 +6,7 @@ import { useEmergencyStore } from '@/presentation/stores/emergencyStore';
 import { useLocationStore } from '@/presentation/stores/locationStore';
 import { colors } from '@/presentation/theme/colors';
 import { formatETA } from '@/shared/utils/formatters';
-import apiClient from '@/infrastructure/api/client';
+import { container } from '@/di/container';
 
 export default function EmergencyScreen() {
   const router = useRouter();
@@ -97,7 +97,7 @@ export default function EmergencyScreen() {
             style={styles.contactBtn}
             onPress={async () => {
               try {
-                await apiClient.post(`/emergency/${activeEmergency?.id}/notify-contacts`);
+                await container.repos.emergency.notifyContacts(activeEmergency!.id);
                 Alert.alert('Notificación enviada', 'Tus contactos de emergencia han sido alertados.');
               } catch {
                 Alert.alert('Error', 'No se pudo notificar a tus contactos.');

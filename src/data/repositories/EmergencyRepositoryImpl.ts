@@ -22,6 +22,10 @@ export class EmergencyRepositoryImpl implements IEmergencyRepository {
     await apiClient.patch(ENDPOINTS.EMERGENCY.UPDATE_LOCATION(id), { location });
   }
 
+  async notifyContacts(id: string): Promise<void> {
+    await apiClient.post(ENDPOINTS.EMERGENCY.NOTIFY_CONTACTS(id));
+  }
+
   async getHistory(): Promise<Emergency[]> {
     const { data } = await apiClient.get<Emergency[]>(ENDPOINTS.EMERGENCY.HISTORY);
     return data;

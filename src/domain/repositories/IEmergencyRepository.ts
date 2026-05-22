@@ -12,6 +12,7 @@ export interface IEmergencyRepository {
   create(dto: CreateEmergencyDTO): Promise<Emergency>;
   cancel(id: string): Promise<void>;
   updateLocation(id: string, location: Coordinates): Promise<void>;
+  notifyContacts(id: string): Promise<void>;
   getHistory(): Promise<Emergency[]>;
   getContacts(): Promise<EmergencyContact[]>;
 }

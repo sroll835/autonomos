@@ -48,6 +48,7 @@ export const ENDPOINTS = {
     DETAIL: (id: string) => `/emergency/${id}`,
     UPDATE_LOCATION: (id: string) => `/emergency/${id}/location`,
     CANCEL: (id: string) => `/emergency/${id}/cancel`,
+    NOTIFY_CONTACTS: (id: string) => `/emergency/${id}/notify-contacts`,
     HISTORY: '/emergency/history',
   },
   PROVIDERS: {
