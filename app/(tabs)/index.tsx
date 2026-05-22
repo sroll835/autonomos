@@ -1,26 +1,46 @@
 import React, { useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, FlatList, Dimensions } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Pressable, Dimensions } from 'react-native';
 import { useRouter } from 'expo-router';
+import {
+  MapPin,
+  Siren,
+  ChevronRight,
+  Cog,
+  Wrench,
+  Truck,
+  HeartPulse,
+  Package,
+  HardHat,
+  Tag,
+} from 'lucide-react-native';
 import { useAuthStore } from '@/presentation/stores/authStore';
 import { useLocationStore } from '@/presentation/stores/locationStore';
 import { SafeScreen } from '@/presentation/components/layout/SafeScreen';
 import { Card } from '@/presentation/components/ui/Card';
 import { Avatar } from '@/presentation/components/ui/Avatar';
-import { colors } from '@/presentation/theme/colors';
+import { useTheme } from '@/presentation/theme/ThemeProvider';
+import { typography } from '@/presentation/theme/tokens/typography';
+import { spacing, radius } from '@/presentation/theme/tokens/spacing';
 
 const { width } = Dimensions.get('window');
+const GRID_GAP = spacing.md;
+const GRID_HORIZONTAL = spacing.md * 2;
+const SERVICE_CARD_SIZE = (width - GRID_HORIZONTAL - GRID_GAP * 2) / 3;
 
-const SERVICE_GRID = [
-  { id: 'autoparts', label: 'Autopartes', emoji: '🔩', route: '/(tabs)/marketplace', color: '#E8F0FE' },
-  { id: 'mechanic', label: 'Mecánico', emoji: '🔧', route: '/(tabs)/services', color: '#E8F0FE' },
-  { id: 'tow', label: 'Grúa', emoji: '🚛', route: '/(tabs)/services', color: '#FFF3E0' },
-  { id: 'ambulance', label: 'Ambulancia', emoji: '🚑', route: '/emergency', color: '#FCE8E8' },
-  { id: 'logistics', label: 'Logística', emoji: '📦', route: '/(tabs)/services', color: '#E8F5E9' },
-  { id: 'autonomous', label: 'Autónomos', emoji: '👷', route: '/(tabs)/services', color: '#F3E5F5' },
+type ServiceIcon = React.ComponentType<{ size?: number; color?: string; strokeWidth?: number }>;
+
+const SERVICE_GRID: Array<{ id: string; label: string; Icon: ServiceIcon; route: string }> = [
+  { id: 'autoparts',  label: 'Autopartes',  Icon: Cog,        route: '/(tabs)/marketplace' },
+  { id: 'mechanic',   label: 'Mecánico',    Icon: Wrench,     route: '/(tabs)/services' },
+  { id: 'tow',        label: 'Grúa',        Icon: Truck,      route: '/(tabs)/services' },
+  { id: 'ambulance',  label: 'Ambulancia',  Icon: HeartPulse, route: '/emergency' },
+  { id: 'logistics',  label: 'Logística',   Icon: Package,    route: '/(tabs)/services' },
+  { id: 'autonomous', label: 'Autónomos',   Icon: HardHat,    route: '/(tabs)/services' },
 ];
 
 export default function HomeScreen() {
   const router = useRouter();
+  const theme = useTheme();
   const { user } = useAuthStore();
   const { currentAddress, getCurrentLocation } = useLocationStore();
 
@@ -29,87 +49,153 @@ export default function HomeScreen() {
   const firstName = user?.name?.split(' ')[0] ?? 'Usuario';
 
   return (
-    <SafeScreen scrollable backgroundColor={colors.neutral[50]}>
+    <SafeScreen scrollable>
       {/* Header */}
       <View style={styles.header}>
         <View style={styles.headerLeft}>
-          <Text style={styles.greeting}>Hola, {firstName} 👋</Text>
+          <Text style={[typography.h1, { color: theme.colors.textPrimary }]}>
+            Hola, {firstName}
+          </Text>
           <View style={styles.locationRow}>
-            <Text style={styles.locationIcon}>📍</Text>
-            <Text style={styles.location} numberOfLines={1}>{currentAddress || 'Obteniendo ubicación...'}</Text>
+            <MapPin size={14} color={theme.colors.textSecondary} strokeWidth={1.5} />
+            <Text
+              style={[typography.caption, { color: theme.colors.textSecondary, marginLeft: spacing.xs }]}
+              numberOfLines={1}
+            >
+              {currentAddress || 'Obteniendo ubicación...'}
+            </Text>
           </View>
         </View>
         <TouchableOpacity onPress={() => router.push('/(tabs)/profile')}>
-          <Avatar uri={user?.avatar} name={user?.name} size={44} />
+          <Avatar uri={user?.avatar} name={user?.name} size={48} />
         </TouchableOpacity>
       </View>
 
-      {/* Botón SOS */}
-      <TouchableOpacity
-        style={styles.sosButton}
+      {/* SOS — única superficie con color emergency, jerarquía de seguridad */}
+      <Pressable
         onPress={() => router.push('/emergency')}
-        activeOpacity={0.85}
+        style={({ pressed }) => [
+          styles.sosButton,
+          {
+            backgroundColor: theme.colors.emergency,
+            borderRadius: radius.lg,
+            opacity: pressed ? 0.92 : 1,
+          },
+        ]}
       >
-        <Text style={styles.sosIcon}>🚨</Text>
-        <View>
-          <Text style={styles.sosTitle}>EMERGENCIA SOS</Text>
-          <Text style={styles.sosSubtitle}>Toca para llamar ayuda inmediata</Text>
+        <Siren size={28} color={theme.colors.textPrimary} strokeWidth={2} />
+        <View style={styles.sosTextBlock}>
+          <Text style={[typography.overline, { color: theme.colors.textPrimary }]}>
+            Emergencia SOS
+          </Text>
+          <Text style={[typography.caption, { color: 'rgba(244, 244, 245, 0.85)', marginTop: 2 }]}>
+            Toca para llamar ayuda inmediata
+          </Text>
         </View>
-        <Text style={styles.sosArrow}>→</Text>
-      </TouchableOpacity>
+        <ChevronRight size={20} color={theme.colors.textPrimary} strokeWidth={2} />
+      </Pressable>
 
       {/* Grid de servicios */}
-      <Text style={styles.sectionTitle}>¿Qué necesitas?</Text>
+      <Text style={[typography.h2, { color: theme.colors.textPrimary, marginBottom: spacing.lg }]}>
+        ¿Qué necesitas?
+      </Text>
       <View style={styles.servicesGrid}>
         {SERVICE_GRID.map((service) => (
-          <TouchableOpacity
+          <Pressable
             key={service.id}
-            style={[styles.serviceCard, { backgroundColor: service.color }]}
             onPress={() => router.push(service.route as never)}
-            activeOpacity={0.8}
+            style={({ pressed }) => [
+              styles.serviceCard,
+              {
+                width: SERVICE_CARD_SIZE,
+                backgroundColor: pressed ? theme.colors.surfaceRaised : theme.colors.surface,
+                borderColor: theme.colors.border,
+                borderRadius: radius.lg,
+              },
+            ]}
           >
-            <Text style={styles.serviceEmoji}>{service.emoji}</Text>
-            <Text style={styles.serviceLabel}>{service.label}</Text>
-          </TouchableOpacity>
+            <service.Icon size={28} color={theme.colors.chrome} strokeWidth={1.5} />
+            <Text
+              style={[
+                typography.caption,
+                { color: theme.colors.textPrimary, marginTop: spacing.sm, textAlign: 'center' },
+              ]}
+            >
+              {service.label}
+            </Text>
+          </Pressable>
         ))}
       </View>
 
       {/* Banner de ofertas */}
-      <Text style={styles.sectionTitle}>Ofertas del día</Text>
+      <Text style={[typography.h2, { color: theme.colors.textPrimary, marginTop: spacing.xl, marginBottom: spacing.lg }]}>
+        Ofertas del día
+      </Text>
       <Card style={styles.offerBanner}>
-        <Text style={styles.offerEmoji}>🎯</Text>
-        <View style={styles.offerContent}>
-          <Text style={styles.offerTitle}>Autopartes importadas</Text>
-          <Text style={styles.offerDesc}>Hasta 40% de descuento en repuestos seleccionados</Text>
+        <View
+          style={[
+            styles.offerIconWrap,
+            { backgroundColor: theme.colors.surfaceRaised, borderColor: theme.colors.chrome },
+          ]}
+        >
+          <Tag size={20} color={theme.colors.chrome} strokeWidth={1.5} />
         </View>
+        <View style={styles.offerContent}>
+          <Text style={[typography.h3, { color: theme.colors.textPrimary }]}>
+            Autopartes importadas
+          </Text>
+          <Text style={[typography.body, { color: theme.colors.textSecondary, marginTop: spacing.xs }]}>
+            Hasta 40% de descuento en repuestos seleccionados
+          </Text>
+        </View>
+        <ChevronRight size={18} color={theme.colors.textSecondary} strokeWidth={1.5} />
       </Card>
     </SafeScreen>
   );
 }
 
 const styles = StyleSheet.create({
-  header: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 20 },
-  headerLeft: { flex: 1 },
-  greeting: { fontSize: 22, fontFamily: 'Inter_700Bold', color: colors.neutral[900], marginBottom: 4 },
-  locationRow: { flexDirection: 'row', alignItems: 'center' },
-  locationIcon: { fontSize: 12, marginRight: 4 },
-  location: { fontSize: 13, fontFamily: 'Inter_400Regular', color: colors.neutral[500], flex: 1 },
-  sosButton: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: colors.semantic.emergency,
-    borderRadius: 16, padding: 16, marginBottom: 24, gap: 12,
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: spacing.xl,
   },
-  sosIcon: { fontSize: 28 },
-  sosTitle: { fontSize: 16, fontFamily: 'Inter_700Bold', color: colors.white },
-  sosSubtitle: { fontSize: 12, fontFamily: 'Inter_400Regular', color: 'rgba(255,255,255,0.85)' },
-  sosArrow: { marginLeft: 'auto', fontSize: 18, color: colors.white },
-  sectionTitle: { fontSize: 18, fontFamily: 'Inter_700Bold', color: colors.neutral[900], marginBottom: 14 },
-  servicesGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 12, marginBottom: 24 },
-  serviceCard: { width: (width - 56) / 3, aspectRatio: 1, borderRadius: 14, alignItems: 'center', justifyContent: 'center', padding: 8 },
-  serviceEmoji: { fontSize: 28, marginBottom: 6 },
-  serviceLabel: { fontSize: 12, fontFamily: 'Inter_500Medium', color: colors.neutral[700], textAlign: 'center' },
-  offerBanner: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 20 },
-  offerEmoji: { fontSize: 32 },
+  headerLeft: { flex: 1, gap: spacing.xs },
+  locationRow: { flexDirection: 'row', alignItems: 'center', marginTop: spacing.xs },
+  sosButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.lg,
+    marginBottom: spacing.xl,
+    gap: spacing.md,
+  },
+  sosTextBlock: { flex: 1 },
+  servicesGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: GRID_GAP,
+  },
+  serviceCard: {
+    aspectRatio: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    padding: spacing.sm,
+  },
+  offerBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.md,
+  },
+  offerIconWrap: {
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+    borderWidth: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   offerContent: { flex: 1 },
-  offerTitle: { fontSize: 15, fontFamily: 'Inter_600SemiBold', color: colors.neutral[900], marginBottom: 2 },
-  offerDesc: { fontSize: 13, fontFamily: 'Inter_400Regular', color: colors.neutral[500] },
 });
