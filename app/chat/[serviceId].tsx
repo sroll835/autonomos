@@ -7,8 +7,7 @@ import { useAuthStore } from '@/presentation/stores/authStore';
 import { Avatar } from '@/presentation/components/ui/Avatar';
 import { colors } from '@/presentation/theme/colors';
 import { ChatMessage } from '@/domain/entities/Service';
-import apiClient from '@/infrastructure/api/client';
-import { ENDPOINTS } from '@/infrastructure/api/endpoints';
+import { container } from '@/di/container';
 import { getSocket, SOCKET_EVENTS } from '@/infrastructure/socket/socketClient';
 
 export default function ChatScreen() {
@@ -21,10 +20,7 @@ export default function ChatScreen() {
 
   const { data: messages, isLoading } = useQuery<ChatMessage[]>({
     queryKey: ['chat', serviceId],
-    queryFn: async () => {
-      const { data } = await apiClient.get(ENDPOINTS.SERVICES.MESSAGES(serviceId));
-      return data;
-    },
+    queryFn: () => container.repos.service.getMessages(serviceId),
     refetchInterval: 10000,
   });
 
@@ -48,10 +44,7 @@ export default function ChatScreen() {
   }, [messages]);
 
   const sendMutation = useMutation({
-    mutationFn: async (content: string) => {
-      const { data } = await apiClient.post<ChatMessage>(ENDPOINTS.SERVICES.MESSAGES(serviceId), { content, type: 'TEXT' });
-      return data;
-    },
+    mutationFn: (content: string) => container.repos.service.sendMessage(serviceId, content, 'TEXT'),
     onSuccess: (msg) => {
       qc.setQueryData<ChatMessage[]>(['chat', serviceId], (prev) => [...(prev ?? []), msg]);
       setText('');
