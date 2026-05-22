@@ -3,21 +3,24 @@ import { ENDPOINTS } from '../../infrastructure/api/endpoints';
 import { secureStorage, SECURE_KEYS } from '../../infrastructure/storage/secureStorage';
 import { IAuthRepository, RegisterDTO } from '../../domain/repositories/IAuthRepository';
 import { User, AuthResponse, AuthTokens } from '../../domain/entities/User';
+import { toUser } from '../mappers/userMapper';
 
 /** Implementación del repositorio de autenticación */
 export class AuthRepositoryImpl implements IAuthRepository {
   async login(email: string, password: string): Promise<AuthResponse> {
-    const { data } = await apiClient.post<AuthResponse>(ENDPOINTS.AUTH.LOGIN, { email, password });
+    const { data } = await apiClient.post(ENDPOINTS.AUTH.LOGIN, { email, password });
+    const user = toUser(data.user);
     await this._saveTokens(data.tokens);
-    await secureStorage.set(SECURE_KEYS.USER_ID, data.user.id);
-    return data;
+    await secureStorage.set(SECURE_KEYS.USER_ID, user.id);
+    return { user, tokens: data.tokens };
   }
 
   async register(dto: RegisterDTO): Promise<AuthResponse> {
-    const { data } = await apiClient.post<AuthResponse>(ENDPOINTS.AUTH.REGISTER, dto);
+    const { data } = await apiClient.post(ENDPOINTS.AUTH.REGISTER, dto);
+    const user = toUser(data.user);
     await this._saveTokens(data.tokens);
-    await secureStorage.set(SECURE_KEYS.USER_ID, data.user.id);
-    return data;
+    await secureStorage.set(SECURE_KEYS.USER_ID, user.id);
+    return { user, tokens: data.tokens };
   }
 
   async logout(): Promise<void> {
@@ -53,16 +56,16 @@ export class AuthRepositoryImpl implements IAuthRepository {
 
   async getCurrentUser(): Promise<User | null> {
     try {
-      const { data } = await apiClient.get<User>(ENDPOINTS.AUTH.ME);
-      return data;
+      const { data } = await apiClient.get(ENDPOINTS.AUTH.ME);
+      return toUser(data);
     } catch {
       return null;
     }
   }
 
   async updateProfile(dto: Partial<User>): Promise<User> {
-    const { data } = await apiClient.patch<User>(ENDPOINTS.USERS.UPDATE, dto);
-    return data;
+    const { data } = await apiClient.patch(ENDPOINTS.USERS.UPDATE, dto);
+    return toUser(data);
   }
 
   async uploadAvatar(form: FormData): Promise<{ url: string }> {
