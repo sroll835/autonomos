@@ -1,6 +1,6 @@
 import { io, Socket } from 'socket.io-client';
-import * as SecureStore from 'expo-secure-store';
 import Constants from 'expo-constants';
+import { secureStorage, SECURE_KEYS } from '../storage/secureStorage';
 
 const SOCKET_URL = Constants.expoConfig?.extra?.socketUrl ?? 'wss://socket.autonomos.co';
 
@@ -29,7 +29,7 @@ let socket: Socket | null = null;
 export const initSocket = async (): Promise<Socket> => {
   if (socket?.connected) return socket;
 
-  const token = await SecureStore.getItemAsync('access_token');
+  const token = await secureStorage.get(SECURE_KEYS.ACCESS_TOKEN);
 
   socket = io(SOCKET_URL, {
     auth: { token },
