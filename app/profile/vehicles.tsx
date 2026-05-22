@@ -6,8 +6,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
 import { Card } from '@/presentation/components/ui/Card';
 import { colors } from '@/presentation/theme/colors';
-import apiClient from '@/infrastructure/api/client';
-import { ENDPOINTS } from '@/infrastructure/api/endpoints';
+import { container } from '@/di/container';
 
 interface Vehicle {
   id: string;
@@ -27,20 +26,17 @@ export default function VehiclesScreen() {
 
   const { data: vehicles, isLoading } = useQuery<Vehicle[]>({
     queryKey: ['vehicles'],
-    queryFn: async () => {
-      const { data } = await apiClient.get(ENDPOINTS.USERS.VEHICLES);
-      return data;
-    },
+    queryFn: () => container.repos.user.getVehicles(),
   });
 
   const addMutation = useMutation({
-    mutationFn: async () => {
-      const { data } = await apiClient.post(ENDPOINTS.USERS.VEHICLES, {
-        ...form,
-        year: parseInt(form.year, 10),
-      });
-      return data;
-    },
+    mutationFn: () => container.repos.user.addVehicle({
+      brand: form.brand,
+      model: form.model,
+      year: parseInt(form.year, 10),
+      plate: form.plate,
+      color: form.color,
+    }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['vehicles'] });
       setShowModal(false);
@@ -51,7 +47,7 @@ export default function VehiclesScreen() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (id: string) => apiClient.delete(`${ENDPOINTS.USERS.VEHICLES}/${id}`),
+    mutationFn: (id: string) => container.repos.user.removeVehicle(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['vehicles'] }),
   });
 

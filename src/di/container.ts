@@ -4,6 +4,7 @@ import { IProductRepository } from '../domain/repositories/IProductRepository';
 import { IServiceRepository } from '../domain/repositories/IServiceRepository';
 import { ILocationRepository } from '../domain/repositories/ILocationRepository';
 import { IEmergencyRepository } from '../domain/repositories/IEmergencyRepository';
+import { IUserRepository } from '../domain/repositories/IUserRepository';
 
 import { AuthRepositoryImpl } from '../data/repositories/AuthRepositoryImpl';
 import { OrderRepositoryImpl } from '../data/repositories/OrderRepositoryImpl';
@@ -11,6 +12,7 @@ import { ProductRepositoryImpl } from '../data/repositories/ProductRepositoryImp
 import { ServiceRepositoryImpl } from '../data/repositories/ServiceRepositoryImpl';
 import { LocationRepositoryImpl } from '../data/repositories/LocationRepositoryImpl';
 import { EmergencyRepositoryImpl } from '../data/repositories/EmergencyRepositoryImpl';
+import { UserRepositoryImpl } from '../data/repositories/UserRepositoryImpl';
 
 import { TriggerSOSUseCase } from '../domain/usecases/emergency/TriggerSOSUseCase';
 import { GetProductsUseCase } from '../domain/usecases/marketplace/GetProductsUseCase';
@@ -22,6 +24,7 @@ const product: IProductRepository = new ProductRepositoryImpl();
 const service: IServiceRepository = new ServiceRepositoryImpl();
 const location: ILocationRepository = new LocationRepositoryImpl();
 const emergency: IEmergencyRepository = new EmergencyRepositoryImpl();
+const user: IUserRepository = new UserRepositoryImpl();
 
 export const container = {
   repos: {
@@ -31,6 +34,7 @@ export const container = {
     service,
     location,
     emergency,
+    user,
   },
   useCases: {
     triggerSOS: new TriggerSOSUseCase(emergency),

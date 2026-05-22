@@ -8,7 +8,7 @@ import Toast from 'react-native-toast-message';
 import { Card } from '@/presentation/components/ui/Card';
 import { Badge } from '@/presentation/components/ui/Badge';
 import { colors } from '@/presentation/theme/colors';
-import apiClient from '@/infrastructure/api/client';
+import { container } from '@/di/container';
 
 interface Document {
   id: string;
@@ -40,10 +40,7 @@ export default function DocumentsScreen() {
 
   const { data: documents, isLoading } = useQuery<Document[]>({
     queryKey: ['documents'],
-    queryFn: async () => {
-      const { data } = await apiClient.get('/users/documents');
-      return data;
-    },
+    queryFn: () => container.repos.user.getDocuments(),
   });
 
   const uploadDocument = async (type: string) => {
@@ -58,7 +55,7 @@ export default function DocumentsScreen() {
       const form = new FormData();
       form.append('file', { uri: result.assets[0].uri, type: 'image/jpeg', name: `${type}.jpg` } as never);
       form.append('type', type);
-      await apiClient.post('/users/documents', form, { headers: { 'Content-Type': 'multipart/form-data' } });
+      await container.repos.user.uploadDocument(form);
       qc.invalidateQueries({ queryKey: ['documents'] });
       Toast.show({ type: 'success', text1: 'Documento enviado para revisión' });
     } catch (e: unknown) {
@@ -72,7 +69,7 @@ export default function DocumentsScreen() {
     Alert.alert('Eliminar documento', '¿Seguro?', [
       { text: 'Cancelar', style: 'cancel' },
       { text: 'Eliminar', style: 'destructive', onPress: async () => {
-        await apiClient.delete(`/users/documents/${id}`);
+        await container.repos.user.deleteDocument(id);
         qc.invalidateQueries({ queryKey: ['documents'] });
       }},
     ]);

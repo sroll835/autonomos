@@ -8,7 +8,7 @@ import { Avatar } from '@/presentation/components/ui/Avatar';
 import { Card } from '@/presentation/components/ui/Card';
 import { colors } from '@/presentation/theme/colors';
 import { formatDate } from '@/shared/utils/formatters';
-import apiClient from '@/infrastructure/api/client';
+import { container } from '@/di/container';
 
 interface Review {
   id: string;
@@ -36,10 +36,7 @@ export default function ReviewsScreen() {
 
   const { data: reviews, isLoading } = useQuery<Review[]>({
     queryKey: ['my-reviews'],
-    queryFn: async () => {
-      const { data } = await apiClient.get('/users/reviews');
-      return data;
-    },
+    queryFn: () => container.repos.user.getMyReviews(),
   });
 
   const avgRating = reviews?.length

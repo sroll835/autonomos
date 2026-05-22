@@ -6,8 +6,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
 import { Card } from '@/presentation/components/ui/Card';
 import { colors } from '@/presentation/theme/colors';
-import apiClient from '@/infrastructure/api/client';
-import { ENDPOINTS } from '@/infrastructure/api/endpoints';
+import { container } from '@/di/container';
 
 interface PaymentMethod {
   id: string;
@@ -33,19 +32,15 @@ export default function PaymentsScreen() {
 
   const { data: methods, isLoading } = useQuery<PaymentMethod[]>({
     queryKey: ['payment-methods'],
-    queryFn: async () => {
-      const { data } = await apiClient.get(ENDPOINTS.USERS.PAYMENT_METHODS);
-      return data;
-    },
+    queryFn: () => container.repos.user.getPaymentMethods(),
   });
 
   const addMutation = useMutation({
-    mutationFn: async () => {
+    mutationFn: () => {
       const payload = selectedType === 'TARJETA'
         ? { type: 'TARJETA', last4: cardNumber.slice(-4), brand: 'Visa', cardHolder, expiry }
         : { type: 'NEQUI', phone };
-      const { data } = await apiClient.post(ENDPOINTS.USERS.PAYMENT_METHODS, payload);
-      return data;
+      return container.repos.user.addPaymentMethod(payload);
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['payment-methods'] });
@@ -57,7 +52,7 @@ export default function PaymentsScreen() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (id: string) => apiClient.delete(`${ENDPOINTS.USERS.PAYMENT_METHODS}/${id}`),
+    mutationFn: (id: string) => container.repos.user.removePaymentMethod(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['payment-methods'] }),
   });
 
