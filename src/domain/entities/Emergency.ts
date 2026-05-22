@@ -1,12 +1,7 @@
 import { Coordinates } from './User';
 
-/** Estado de la emergencia */
-export type EmergencyStatus =
-  | 'PENDING'
-  | 'DISPATCHED'
-  | 'IN_ROUTE'
-  | 'ARRIVED'
-  | 'RESOLVED';
+/** Estados reales de una emergencia (emitidos por backend). */
+export type EmergencyStatus = 'ACTIVE' | 'CANCELLED';
 
 /** Tipo de emergencia */
 export type EmergencyType = 'MEDICA' | 'ACCIDENTE' | 'INCENDIO' | 'OTRO';
@@ -19,12 +14,11 @@ export interface Emergency {
   status: EmergencyStatus;
   location: Coordinates;
   address: string;
-  description?: string;
-  ambulanceId?: string;
   ambulanceDriver?: string;
+  ambulancePhone?: string;
   eta?: number;
   createdAt: string;
-  resolvedAt?: string;
+  updatedAt: string;
 }
 
 /** Contacto de emergencia del usuario */

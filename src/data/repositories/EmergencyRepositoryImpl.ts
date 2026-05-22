@@ -3,15 +3,16 @@ import { ENDPOINTS } from '../../infrastructure/api/endpoints';
 import { IEmergencyRepository, CreateEmergencyDTO, AddEmergencyContactDTO } from '../../domain/repositories/IEmergencyRepository';
 import { Emergency, EmergencyContact } from '../../domain/entities/Emergency';
 import { Coordinates } from '../../domain/entities/User';
+import { toEmergency } from '../mappers/emergencyMapper';
 
 export class EmergencyRepositoryImpl implements IEmergencyRepository {
   async create(dto: CreateEmergencyDTO): Promise<Emergency> {
-    const { data } = await apiClient.post<Emergency>(ENDPOINTS.EMERGENCY.CREATE, {
+    const { data } = await apiClient.post(ENDPOINTS.EMERGENCY.CREATE, {
       type: dto.type,
       location: dto.location,
       address: dto.address,
     });
-    return data;
+    return toEmergency(data);
   }
 
   async cancel(id: string): Promise<void> {
@@ -27,8 +28,8 @@ export class EmergencyRepositoryImpl implements IEmergencyRepository {
   }
 
   async getHistory(): Promise<Emergency[]> {
-    const { data } = await apiClient.get<Emergency[]>(ENDPOINTS.EMERGENCY.HISTORY);
-    return data;
+    const { data } = await apiClient.get<any[]>(ENDPOINTS.EMERGENCY.HISTORY);
+    return data.map(toEmergency);
   }
 
   async getContacts(): Promise<EmergencyContact[]> {
