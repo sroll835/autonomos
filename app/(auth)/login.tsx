@@ -1,18 +1,31 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  Image,
+} from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
+import { Eye, EyeOff } from 'lucide-react-native';
 import Toast from 'react-native-toast-message';
 import { useAuthStore } from '@/presentation/stores/authStore';
 import { Input } from '@/presentation/components/ui/Input';
 import { Button } from '@/presentation/components/ui/Button';
 import { loginSchema, LoginFormData } from '@/shared/validations/authValidations';
-import { colors } from '@/presentation/theme/colors';
+import { useTheme } from '@/presentation/theme/ThemeProvider';
+import { typography } from '@/presentation/theme/tokens/typography';
+import { spacing } from '@/presentation/theme/tokens/spacing';
 
 export default function LoginScreen() {
   const router = useRouter();
+  const theme = useTheme();
   const { login, isLoading } = useAuthStore();
   const [showPassword, setShowPassword] = useState(false);
 
@@ -31,19 +44,30 @@ export default function LoginScreen() {
   };
 
   return (
-    <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.container}>
-      <StatusBar style="dark" />
-      <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
-        {/* Logo */}
-        <View style={styles.logoContainer}>
-          <Text style={styles.logo}>AUTONOMOS</Text>
-          <Text style={styles.tagline}>Todo para ti y tu vehículo</Text>
+    <KeyboardAvoidingView
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
+      <StatusBar style="light" />
+      <ScrollView
+        contentContainerStyle={styles.scroll}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}
+      >
+        {/* Logo — espacio negativo museo */}
+        <View style={styles.logoBlock}>
+          <Image
+            source={require('../../image/logo.png')}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+          <Text style={[typography.body, { color: theme.colors.textSecondary, marginTop: spacing.lg, textAlign: 'center', letterSpacing: 0.5 }]}>
+            Todo para ti y tu vehículo
+          </Text>
         </View>
 
         {/* Formulario */}
         <View style={styles.form}>
-          <Text style={styles.title}>Iniciar sesión</Text>
-
           <Controller
             control={control}
             name="email"
@@ -70,22 +94,42 @@ export default function LoginScreen() {
                 onChangeText={onChange}
                 secureTextEntry={!showPassword}
                 error={errors.password?.message}
-                rightIcon={<Text style={styles.eyeIcon}>{showPassword ? '🙈' : '👁'}</Text>}
+                rightIcon={
+                  showPassword
+                    ? <EyeOff size={20} color={theme.colors.textSecondary} strokeWidth={1.5} />
+                    : <Eye size={20} color={theme.colors.textSecondary} strokeWidth={1.5} />
+                }
                 onRightIconPress={() => setShowPassword(!showPassword)}
               />
             )}
           />
 
-          <TouchableOpacity onPress={() => router.push('/(auth)/forgot-password' as never)} style={styles.forgotBtn}>
-            <Text style={styles.forgotText}>¿Olvidaste tu contraseña?</Text>
+          <TouchableOpacity
+            onPress={() => router.push('/(auth)/forgot-password' as never)}
+            style={styles.forgotBtn}
+          >
+            <Text style={[typography.caption, { color: theme.colors.chrome, letterSpacing: 0.4 }]}>
+              ¿Olvidaste tu contraseña?
+            </Text>
           </TouchableOpacity>
 
-          <Button title="Iniciar sesión" onPress={handleSubmit(onSubmit)} isLoading={isLoading} fullWidth size="lg" style={styles.submitBtn} />
+          <Button
+            title="Iniciar sesión"
+            onPress={handleSubmit(onSubmit)}
+            isLoading={isLoading}
+            fullWidth
+            size="lg"
+            style={{ marginTop: spacing.lg }}
+          />
 
           <View style={styles.registerRow}>
-            <Text style={styles.registerText}>¿No tienes cuenta? </Text>
+            <Text style={[typography.body, { color: theme.colors.textSecondary }]}>
+              ¿No tienes cuenta?{'  '}
+            </Text>
             <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
-              <Text style={styles.registerLink}>Crear cuenta</Text>
+              <Text style={[typography.body, { color: theme.colors.chrome, fontFamily: 'Montserrat_600SemiBold' }]}>
+                Crear cuenta
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -95,18 +139,32 @@ export default function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.white },
-  scroll: { flexGrow: 1, padding: 24 },
-  logoContainer: { alignItems: 'center', paddingTop: 60, paddingBottom: 40 },
-  logo: { fontSize: 32, fontFamily: 'Inter_700Bold', color: colors.navy[500], letterSpacing: 2 },
-  tagline: { fontSize: 14, fontFamily: 'Inter_400Regular', color: colors.neutral[500], marginTop: 4 },
+  container: { flex: 1 },
+  scroll: {
+    flexGrow: 1,
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing['3xl'],
+    paddingBottom: spacing['2xl'],
+  },
+  logoBlock: {
+    alignItems: 'center',
+    marginBottom: spacing['3xl'],
+  },
+  logo: {
+    width: 200,
+    height: 120,
+  },
   form: { flex: 1 },
-  title: { fontSize: 24, fontFamily: 'Inter_700Bold', color: colors.neutral[900], marginBottom: 24 },
-  forgotBtn: { alignSelf: 'flex-end', marginBottom: 24, marginTop: -8 },
-  forgotText: { color: colors.primary[600], fontFamily: 'Inter_500Medium', fontSize: 14 },
-  submitBtn: { marginBottom: 24 },
-  registerRow: { flexDirection: 'row', justifyContent: 'center' },
-  registerText: { color: colors.neutral[500], fontFamily: 'Inter_400Regular' },
-  registerLink: { color: colors.primary[600], fontFamily: 'Inter_600SemiBold' },
-  eyeIcon: { fontSize: 18 },
+  forgotBtn: {
+    alignSelf: 'flex-end',
+    paddingVertical: spacing.sm,
+    marginTop: -spacing.xs,
+    marginBottom: spacing.md,
+  },
+  registerRow: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    marginTop: spacing.xl,
+    alignItems: 'center',
+  },
 });
