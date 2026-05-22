@@ -25,7 +25,8 @@ const queryClient = new QueryClient({
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
-    // Inter — mantener mientras se migran pantallas. Borrar cuando ningún archivo lo use.
+    // Inter — PUENTE temporal. TODO: borrar al final del grupo 6 del rework visual.
+    // Verificación: `grep -r "Inter_" app/ src/` debe dar 0 matches antes de eliminar.
     Inter_400Regular,
     Inter_500Medium,
     Inter_600SemiBold,
