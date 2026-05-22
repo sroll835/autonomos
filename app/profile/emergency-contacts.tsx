@@ -6,8 +6,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import Toast from 'react-native-toast-message';
 import { Card } from '@/presentation/components/ui/Card';
 import { colors } from '@/presentation/theme/colors';
-import apiClient from '@/infrastructure/api/client';
-import { ENDPOINTS } from '@/infrastructure/api/endpoints';
+import { container } from '@/di/container';
 
 interface EmergencyContact {
   id: string;
@@ -28,17 +27,11 @@ export default function EmergencyContactsScreen() {
 
   const { data: contacts, isLoading } = useQuery<EmergencyContact[]>({
     queryKey: ['emergency-contacts'],
-    queryFn: async () => {
-      const { data } = await apiClient.get(ENDPOINTS.USERS.EMERGENCY_CONTACTS);
-      return data;
-    },
+    queryFn: () => container.repos.emergency.getContacts(),
   });
 
   const addMutation = useMutation({
-    mutationFn: async () => {
-      const { data } = await apiClient.post(ENDPOINTS.USERS.EMERGENCY_CONTACTS, { name, phone, relationship });
-      return data;
-    },
+    mutationFn: () => container.repos.emergency.addContact({ name, phone, relationship }),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ['emergency-contacts'] });
       setShowModal(false);
@@ -49,7 +42,7 @@ export default function EmergencyContactsScreen() {
   });
 
   const deleteMutation = useMutation({
-    mutationFn: async (id: string) => apiClient.delete(`${ENDPOINTS.USERS.EMERGENCY_CONTACTS}/${id}`),
+    mutationFn: (id: string) => container.repos.emergency.removeContact(id),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['emergency-contacts'] }),
   });
 

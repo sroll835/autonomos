@@ -7,6 +7,12 @@ export interface CreateEmergencyDTO {
   address: string;
 }
 
+export interface AddEmergencyContactDTO {
+  name: string;
+  phone: string;
+  relationship: string;
+}
+
 /** Contrato del repositorio de emergencias SOS */
 export interface IEmergencyRepository {
   create(dto: CreateEmergencyDTO): Promise<Emergency>;
@@ -15,4 +21,6 @@ export interface IEmergencyRepository {
   notifyContacts(id: string): Promise<void>;
   getHistory(): Promise<Emergency[]>;
   getContacts(): Promise<EmergencyContact[]>;
+  addContact(dto: AddEmergencyContactDTO): Promise<EmergencyContact>;
+  removeContact(id: string): Promise<void>;
 }

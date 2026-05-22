@@ -1,6 +1,6 @@
 import apiClient from '../../infrastructure/api/client';
 import { ENDPOINTS } from '../../infrastructure/api/endpoints';
-import { IEmergencyRepository, CreateEmergencyDTO } from '../../domain/repositories/IEmergencyRepository';
+import { IEmergencyRepository, CreateEmergencyDTO, AddEmergencyContactDTO } from '../../domain/repositories/IEmergencyRepository';
 import { Emergency, EmergencyContact } from '../../domain/entities/Emergency';
 import { Coordinates } from '../../domain/entities/User';
 
@@ -34,5 +34,18 @@ export class EmergencyRepositoryImpl implements IEmergencyRepository {
   async getContacts(): Promise<EmergencyContact[]> {
     const { data } = await apiClient.get<EmergencyContact[]>(ENDPOINTS.USERS.EMERGENCY_CONTACTS);
     return data;
+  }
+
+  async addContact(dto: AddEmergencyContactDTO): Promise<EmergencyContact> {
+    const { data } = await apiClient.post<EmergencyContact>(ENDPOINTS.USERS.EMERGENCY_CONTACTS, {
+      name: dto.name,
+      phone: dto.phone,
+      relationship: dto.relationship,
+    });
+    return data;
+  }
+
+  async removeContact(id: string): Promise<void> {
+    await apiClient.delete(`${ENDPOINTS.USERS.EMERGENCY_CONTACTS}/${id}`);
   }
 }
