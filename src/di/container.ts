@@ -14,6 +14,7 @@ import { EmergencyRepositoryImpl } from '../data/repositories/EmergencyRepositor
 
 import { TriggerSOSUseCase } from '../domain/usecases/emergency/TriggerSOSUseCase';
 import { GetProductsUseCase } from '../domain/usecases/marketplace/GetProductsUseCase';
+import { LoginUseCase } from '../domain/usecases/auth/LoginUseCase';
 
 const auth: IAuthRepository = new AuthRepositoryImpl();
 const order: IOrderRepository = new OrderRepositoryImpl();
@@ -34,5 +35,6 @@ export const container = {
   useCases: {
     triggerSOS: new TriggerSOSUseCase(emergency),
     getProducts: new GetProductsUseCase(product),
+    login: new LoginUseCase(auth),
   },
 };

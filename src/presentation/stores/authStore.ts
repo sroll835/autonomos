@@ -36,7 +36,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
       login: async (email, password) => {
         set({ isLoading: true, error: null });
         try {
-          const { user } = await authRepo.login(email, password);
+          const { user } = await container.useCases.login.execute(email, password);
           set({ user, isAuthenticated: true, isLoading: false });
         } catch (e: unknown) {
           set({ error: (e as Error).message, isLoading: false });

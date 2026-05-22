@@ -6,10 +6,10 @@ export class LoginUseCase {
   constructor(private readonly authRepo: IAuthRepository) {}
 
   async execute(email: string, password: string): Promise<AuthResponse> {
-    if (!email || !password) throw new Error('El correo y la contraseña son requeridos.');
+    if (!email) throw new Error('El correo es requerido');
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) throw new Error('El formato del correo no es válido.');
-    if (password.length < 6) throw new Error('La contraseña debe tener al menos 6 caracteres.');
+    if (!emailRegex.test(email)) throw new Error('Correo electrónico inválido');
+    if (password.length < 6) throw new Error('La contraseña debe tener al menos 6 caracteres');
     return this.authRepo.login(email.toLowerCase().trim(), password);
   }
 }
