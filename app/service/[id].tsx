@@ -36,12 +36,12 @@ export default function ServiceDetailScreen() {
     setIsRequesting(true);
     try {
       const data = await container.repos.service.createServiceRequest({
-        serviceType: provider?.serviceType,
+        serviceType: provider!.serviceType,
         providerId: id,
         description,
         location: currentLocation,
         address: currentAddress,
-      } as any);
+      });
       Toast.show({ type: 'success', text1: '¡Solicitud enviada!', text2: 'El proveedor responderá pronto' });
       router.replace(`/tracking/${data.id}` as never);
     } catch (e: unknown) {
