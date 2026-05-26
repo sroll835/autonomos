@@ -1,21 +1,24 @@
 import React from 'react';
 import { Tabs, Redirect } from 'expo-router';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { StyleSheet, Platform } from 'react-native';
+import { BlurView } from 'expo-blur';
+import { Home, ShoppingBag, Wrench, Package, User } from 'lucide-react-native';
 import { useAuthStore } from '@/presentation/stores/authStore';
 import { useCartStore } from '@/presentation/stores/cartStore';
-import { colors } from '@/presentation/theme/colors';
+import { useTheme } from '@/presentation/theme/ThemeProvider';
 
-const TAB_ICONS: Record<string, { active: string; inactive: string }> = {
-  index:       { active: '🏠', inactive: '🏡' },
-  marketplace: { active: '🛒', inactive: '🛍' },
-  services:    { active: '🔧', inactive: '⚙️' },
-  orders:      { active: '📦', inactive: '📫' },
-  profile:     { active: '👤', inactive: '👥' },
+const TAB_ICONS: Record<string, any> = {
+  index:       Home,
+  marketplace: ShoppingBag,
+  services:    Wrench,
+  orders:      Package,
+  profile:     User,
 };
 
 export default function TabsLayout() {
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const cartCount = useCartStore((s) => s.itemCount);
+  const theme = useTheme();
 
   if (!isAuthenticated) return <Redirect href="/(auth)/login" />;
 
@@ -23,15 +26,30 @@ export default function TabsLayout() {
     <Tabs
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarActiveTintColor: colors.primary[500],
-        tabBarInactiveTintColor: colors.neutral[500],
-        tabBarStyle: styles.tabBar,
-        tabBarLabelStyle: styles.tabLabel,
-        tabBarIcon: ({ focused }) => (
-          <Text style={{ fontSize: 20 }}>
-            {focused ? TAB_ICONS[route.name]?.active : TAB_ICONS[route.name]?.inactive}
-          </Text>
+        tabBarActiveTintColor: theme.colors.chrome,
+        tabBarInactiveTintColor: theme.colors.textTertiary,
+        tabBarStyle: {
+          backgroundColor: theme.colors.bg2 + 'D9',
+          borderTopColor: theme.colors.borderSubtle,
+          borderTopWidth: 1,
+          height: 64,
+          paddingBottom: 10,
+          paddingTop: 6,
+          position: 'absolute',
+        },
+        tabBarBackground: () => (
+          <BlurView
+            intensity={Platform.OS === 'ios' ? 40 : 80}
+            tint="dark"
+            style={StyleSheet.absoluteFill}
+          />
         ),
+        tabBarLabelStyle: { fontSize: 11, fontFamily: 'Manrope_500Medium', letterSpacing: 0.2 },
+        tabBarIcon: ({ focused, color }) => {
+          const Icon = TAB_ICONS[route.name];
+          if (!Icon) return null;
+          return <Icon size={22} color={color} strokeWidth={focused ? 2 : 1.5} />;
+        },
       })}
     >
       <Tabs.Screen name="index" options={{ title: 'Inicio' }} />
@@ -40,7 +58,12 @@ export default function TabsLayout() {
         options={{
           title: 'Autopartes',
           tabBarBadge: cartCount > 0 ? cartCount : undefined,
-          tabBarBadgeStyle: styles.badge,
+          tabBarBadgeStyle: {
+            backgroundColor: theme.colors.emergency,
+            color: theme.colors.textPrimary,
+            fontSize: 10,
+            fontFamily: 'Manrope_600SemiBold',
+          },
         }}
       />
       <Tabs.Screen name="services" options={{ title: 'Servicios' }} />
@@ -49,16 +72,3 @@ export default function TabsLayout() {
     </Tabs>
   );
 }
-
-const styles = StyleSheet.create({
-  tabBar: {
-    backgroundColor: colors.white,
-    borderTopColor: colors.neutral[200],
-    borderTopWidth: 0.5,
-    height: 60,
-    paddingBottom: 8,
-    paddingTop: 4,
-  },
-  tabLabel: { fontSize: 11, fontFamily: 'Inter_500Medium' },
-  badge: { backgroundColor: colors.semantic.emergency, fontSize: 10 },
-});

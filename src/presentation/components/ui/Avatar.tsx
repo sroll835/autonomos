@@ -11,10 +11,9 @@ interface AvatarProps {
 }
 
 /**
- * Avatar con fallback a iniciales. Dark luxury:
- * - Fallback bg: surfaceRaised
- * - Border 1px chrome (acento sutil)
- * - Iniciales: textPrimary, Montserrat 600
+ * Avatar JuanCode con fallback a iniciales.
+ * Fallback bg: surfaceRaised glass · border: borderStrong
+ * Iniciales: textPrimary Manrope 600
  */
 export const Avatar: React.FC<AvatarProps> = ({ uri, name, size = 40, style }) => {
   const theme = useTheme();
@@ -52,7 +51,7 @@ export const Avatar: React.FC<AvatarProps> = ({ uri, name, size = 40, style }) =
           borderRadius: size / 2,
           backgroundColor: theme.colors.surfaceRaised,
           borderWidth: 1,
-          borderColor: theme.colors.border,
+          borderColor: theme.colors.borderStrong,
         },
         style,
       ]}
@@ -74,5 +73,5 @@ export const Avatar: React.FC<AvatarProps> = ({ uri, name, size = 40, style }) =
 
 const styles = StyleSheet.create({
   fallback: { alignItems: 'center', justifyContent: 'center' },
-  initials: { fontFamily: 'Montserrat_600SemiBold', letterSpacing: 0.5 },
+  initials: { fontFamily: 'Manrope_600SemiBold', letterSpacing: 0.5 },
 });

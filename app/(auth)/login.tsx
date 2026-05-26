@@ -18,6 +18,7 @@ import Toast from 'react-native-toast-message';
 import { useAuthStore } from '@/presentation/stores/authStore';
 import { Input } from '@/presentation/components/ui/Input';
 import { Button } from '@/presentation/components/ui/Button';
+import { GradientText } from '@/presentation/components/ui/GradientText';
 import { loginSchema, LoginFormData } from '@/shared/validations/authValidations';
 import { useTheme } from '@/presentation/theme/ThemeProvider';
 import { typography } from '@/presentation/theme/tokens/typography';
@@ -54,15 +55,23 @@ export default function LoginScreen() {
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}
       >
-        {/* Logo — espacio negativo museo */}
+        {/* Logo horizontal AUTONOMOS */}
         <View style={styles.logoBlock}>
           <Image
-            source={require('../../image/logo.png')}
+            source={require('../../image/logo_largo.png')}
             style={styles.logo}
             resizeMode="contain"
           />
           <Text style={[typography.body, { color: theme.colors.textSecondary, marginTop: spacing.lg, textAlign: 'center', letterSpacing: 0.5 }]}>
             Todo para ti y tu vehículo
+          </Text>
+        </View>
+
+        {/* Heading con sello degradado */}
+        <View style={styles.headingBlock}>
+          <Text style={[typography.h2, { color: theme.colors.textPrimary, textAlign: 'center' }]}>
+            Bienvenido de{'  '}
+            <GradientText style={typography.h2}>vuelta</GradientText>
           </Text>
         </View>
 
@@ -127,7 +136,7 @@ export default function LoginScreen() {
               ¿No tienes cuenta?{'  '}
             </Text>
             <TouchableOpacity onPress={() => router.push('/(auth)/register')}>
-              <Text style={[typography.body, { color: theme.colors.chrome, fontFamily: 'Montserrat_600SemiBold' }]}>
+              <Text style={[typography.body, { color: theme.colors.chrome, fontFamily: 'Manrope_600SemiBold' }]}>
                 Crear cuenta
               </Text>
             </TouchableOpacity>
@@ -143,16 +152,19 @@ const styles = StyleSheet.create({
   scroll: {
     flexGrow: 1,
     paddingHorizontal: spacing.xl,
-    paddingTop: spacing['3xl'],
+    paddingTop: spacing['2xl'],
     paddingBottom: spacing['2xl'],
   },
   logoBlock: {
     alignItems: 'center',
-    marginBottom: spacing['3xl'],
+    marginBottom: spacing.xl,
   },
   logo: {
-    width: 200,
-    height: 120,
+    width: 260,
+    height: 64,
+  },
+  headingBlock: {
+    marginBottom: spacing.xl,
   },
   form: { flex: 1 },
   forgotBtn: {

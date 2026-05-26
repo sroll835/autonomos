@@ -13,17 +13,12 @@ interface InputProps extends TextInputProps {
 }
 
 /**
- * Input — automotive luxury chiaroscuro.
+ * Input JuanCode — glassmorphism + focus cyan.
  *
- * Background: surface (#141416)
- * Border default: borderSubtle
- * Border focus: chrome (alias borderFocus)
- * Label flotante: textSecondary → chrome al focus, danger en error
- * Text: textPrimary
- * Placeholder: textTertiary
- *
- * Focus state: onFocus/onBlur con useState. RN puro.
- * BorderWidth siempre 1.5 para evitar layout shift, solo cambia color.
+ * Background: surface (rgba blanco 0.04 glass)
+ * Border default: border (rgba 0.10)
+ * Border focus: borderFocus (#22D3EE cian g1)
+ * Border error: danger (#FB7185)
  */
 export const Input: React.FC<InputProps> = ({
   label,
@@ -89,7 +84,7 @@ export const Input: React.FC<InputProps> = ({
                 top: labelTop,
                 fontSize: labelFontSize,
                 color: labelColor,
-                fontFamily: 'Montserrat_500Medium',
+                fontFamily: 'Manrope_500Medium',
                 letterSpacing: 0.2,
               },
             ]}
@@ -99,7 +94,7 @@ export const Input: React.FC<InputProps> = ({
           <TextInput
             style={[
               {
-                fontFamily: 'Montserrat_400Regular',
+                fontFamily: 'Manrope_400Regular',
                 fontSize: 16,
                 color: theme.colors.textPrimary,
                 paddingTop: 22,
@@ -140,7 +135,7 @@ const styles = StyleSheet.create({
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    borderWidth: 1.5,
+    borderWidth: 1,
     minHeight: 60,
   },
   inputWrapper: { flex: 1, paddingHorizontal: spacing.md, justifyContent: 'center', minHeight: 60 },

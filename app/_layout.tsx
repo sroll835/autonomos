@@ -2,8 +2,8 @@ import React, { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { useFonts } from 'expo-font';
 import { Inter_400Regular, Inter_500Medium, Inter_600SemiBold, Inter_700Bold } from '@expo-google-fonts/inter';
-import { Cormorant_500Medium, Cormorant_600SemiBold } from '@expo-google-fonts/cormorant';
-import { Montserrat_400Regular, Montserrat_500Medium, Montserrat_600SemiBold } from '@expo-google-fonts/montserrat';
+import { Sora_600SemiBold, Sora_700Bold, Sora_800ExtraBold } from '@expo-google-fonts/sora';
+import { Manrope_400Regular, Manrope_500Medium, Manrope_600SemiBold } from '@expo-google-fonts/manrope';
 import * as SplashScreen from 'expo-splash-screen';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
@@ -25,21 +25,19 @@ const queryClient = new QueryClient({
 
 export default function RootLayout() {
   const [fontsLoaded] = useFonts({
-    // Inter — PUENTE temporal. TODO: borrar al CIERRE del grupo 3 del rework visual.
-    // Cuando los 8 componentes compartidos (ui/* + layout/*) usen Cormorant/Montserrat,
-    // los screens sin migrar caen a fuente de sistema — neutra, no rompe dark premium.
-    // Verificación previa: `grep -r "Inter_" src/presentation/components/` debe dar 0.
+    // Inter — PUENTE temporal mientras los 23 screens legacy se migran. Borrar al final.
     Inter_400Regular,
     Inter_500Medium,
     Inter_600SemiBold,
     Inter_700Bold,
-    // Cormorant — display/headings (luxury serif)
-    Cormorant_500Medium,
-    Cormorant_600SemiBold,
-    // Montserrat — body/UI (sans-serif premium)
-    Montserrat_400Regular,
-    Montserrat_500Medium,
-    Montserrat_600SemiBold,
+    // Sora — títulos/headings JuanCode (futurista premium)
+    Sora_600SemiBold,
+    Sora_700Bold,
+    Sora_800ExtraBold,
+    // Manrope — body/UI JuanCode
+    Manrope_400Regular,
+    Manrope_500Medium,
+    Manrope_600SemiBold,
   });
 
   useEffect(() => {
@@ -54,8 +52,8 @@ export default function RootLayout() {
         <ThemeProvider>
         <QueryClientProvider client={queryClient}>
           <StatusBar style="light" />
-          {/* contentStyle bg hex literal: root layout no consume useTheme (vive bajo ThemeProvider). Paint between route transitions antes de que mount el screen. Mantener sincronizado con darkTheme.colors.background */}
-          <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#0A0A0B' } }}>
+          {/* contentStyle bg hex literal: root layout no consume useTheme (vive bajo ThemeProvider). Paint between route transitions antes de que mount el screen. Mantener sincronizado con darkTheme.colors.background (JuanCode #070A12). */}
+          <Stack screenOptions={{ headerShown: false, contentStyle: { backgroundColor: '#070A12' } }}>
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
             <Stack.Screen name="emergency/index" options={{ presentation: 'fullScreenModal' }} />

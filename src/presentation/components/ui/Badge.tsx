@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text, StyleSheet, ViewStyle } from 'react-native';
-import { colors } from '../../theme/colors';
+import { useTheme } from '../../theme/ThemeProvider';
+import { spacing, radius } from '../../theme/tokens/spacing';
+import { typography } from '../../theme/tokens/typography';
 
-type BadgeVariant = 'success' | 'warning' | 'danger' | 'info' | 'default';
+type BadgeVariant = 'success' | 'warning' | 'danger' | 'info' | 'default' | 'emergency';
 type BadgeStyle = 'filled' | 'outlined';
 
 interface BadgeProps {
@@ -12,30 +14,50 @@ interface BadgeProps {
   style?: ViewStyle;
 }
 
-const VARIANT_CONFIG = {
-  success: { bg: '#E6F9F2', border: colors.semantic.success, text: colors.semantic.success },
-  warning: { bg: '#FFF3E8', border: colors.semantic.warning, text: colors.semantic.warning },
-  danger:  { bg: '#FEE8E6', border: colors.semantic.emergency, text: colors.semantic.emergency },
-  info:    { bg: '#E8F0FE', border: colors.semantic.info, text: colors.semantic.info },
-  default: { bg: colors.neutral[100], border: colors.neutral[300], text: colors.neutral[700] },
-};
+/**
+ * Badge JuanCode — outlined sutil sobre dark glass.
+ * Filled usa surface + texto del color del variant. Outlined sin fill.
+ */
+export const Badge: React.FC<BadgeProps> = ({
+  label,
+  variant = 'default',
+  badgeStyle = 'filled',
+  style,
+}) => {
+  const theme = useTheme();
 
-/** Badge de estado con variantes filled y outlined */
-export const Badge: React.FC<BadgeProps> = ({ label, variant = 'default', badgeStyle = 'filled', style }) => {
-  const config = VARIANT_CONFIG[variant];
+  const colorMap: Record<BadgeVariant, string> = {
+    success:   theme.colors.success,
+    warning:   theme.colors.warning,
+    danger:    theme.colors.danger,
+    info:      theme.colors.info,
+    emergency: theme.colors.emergency,
+    default:   theme.colors.textSecondary,
+  };
+
+  const color = colorMap[variant];
+  const bg = badgeStyle === 'filled' ? theme.colors.surface : 'transparent';
+
   return (
-    <View style={[
-      styles.badge,
-      badgeStyle === 'filled' ? { backgroundColor: config.bg } : { backgroundColor: 'transparent' },
-      { borderColor: config.border },
-      style,
-    ]}>
-      <Text style={[styles.text, { color: config.text }]}>{label}</Text>
+    <View
+      style={[
+        styles.badge,
+        { backgroundColor: bg, borderColor: color, borderRadius: 999 },
+        style,
+      ]}
+    >
+      <Text style={[typography.overline, { color, textTransform: 'none', letterSpacing: 0.5, fontSize: 11 }]}>
+        {label}
+      </Text>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 20, borderWidth: 1, alignSelf: 'flex-start' },
-  text: { fontSize: 12, fontFamily: 'Inter_500Medium' },
+  badge: {
+    paddingHorizontal: spacing.sm + 2,
+    paddingVertical: 3,
+    borderWidth: 1,
+    alignSelf: 'flex-start',
+  },
 });

@@ -1,54 +1,69 @@
 import { Theme } from '../types';
 
 /**
- * Tema principal de AUTONOMOS — automotive luxury chiaroscuro.
- * Dark-first. Tokens semánticos. Cualquier cambio aquí afecta a TODA la UI.
+ * Tema principal de AUTONOMOS — JuanCode (dark futurista premium).
+ *
+ * SELLO de marca: degradado cyan → blue → purple → pink-red.
+ * Aplicar el degradado via <GradientText /> en títulos de pantalla
+ * y métricas/datos clave (no en párrafos ni labels).
+ *
+ * Cards / sheets: glassmorphism (surface rgba blanco semitransparente
+ * sobre background dark).
  */
 export const darkTheme: Theme = {
   mode: 'dark',
   colors: {
-    // Backgrounds y superficies
-    background:      '#0A0A0B',
-    surface:         '#141416',
-    surfaceRaised:   '#1C1C1F',
-    surfaceElevated: '#26262A',
-    overlay:         'rgba(10, 10, 11, 0.72)',
+    // Backgrounds
+    background:      '#070A12',
+    bg2:             '#0B1020',
+    surface:         'rgba(255, 255, 255, 0.04)',
+    surfaceRaised:   'rgba(255, 255, 255, 0.06)',
+    surfaceElevated: '#0B1020',
+    overlay:         'rgba(7, 10, 18, 0.78)',
 
     // Bordes
-    border:          '#2A2A2E',
-    borderSubtle:    '#1F1F22',
-    borderFocus:     '#C0C0C5',
+    border:          'rgba(255, 255, 255, 0.10)',
+    borderSubtle:    'rgba(255, 255, 255, 0.06)',
+    borderStrong:    'rgba(255, 255, 255, 0.18)',
+    borderFocus:     '#22D3EE',
 
     // Texto
-    textPrimary:     '#F4F4F5',
-    textSecondary:   '#8A8A8F',
-    textTertiary:    '#5A5A5F',
-    textInverse:     '#0A0A0B',
+    textPrimary:     '#EDF1FA',
+    textSecondary:   '#A6B0C3',
+    textTertiary:    '#6C778C',
+    textInverse:     '#06080F',
+    textOnGradient:  '#06080F',
 
-    // Chrome (acento plata)
-    chrome:          '#C0C0C5',
-    chromeMuted:     'rgba(192, 192, 197, 0.4)',
-    chromeGlow:      'rgba(192, 192, 197, 0.08)',
+    // Acento (cian g1)
+    chrome:          '#22D3EE',
+    chromeMuted:     'rgba(34, 211, 238, 0.4)',
+    chromeGlow:      'rgba(34, 211, 238, 0.16)',
 
-    // Cards claras (spotlight pattern — fondo negro void + cartas blancas)
-    cardLight:           '#F4F4F5',
-    cardLightBorder:     '#E5E5E7',
-    textOnLight:         '#0A0A0B',
-    textOnLightSecondary:'#5A5A5F',
-
-    // CTA
-    ctaPrimary:      '#FFFFFF',
-    ctaPrimaryText:  '#0A0A0B',
+    // CTA texto sobre fill gradient
+    ctaPrimaryText:  '#06080F',
 
     // Feedback semántico
-    success:         '#7A9B7E',
-    warning:         '#B8956A',
-    danger:          '#A86761',
-    info:            '#7A8FA8',
-    emergency:       '#D14A4A',
+    success:         '#22D3EE',
+    warning:         '#FB7185',
+    danger:          '#FB7185',
+    info:            '#4F8BFF',
+    emergency:       '#FF5470',
 
-    // Estados
-    hover:           'rgba(244, 244, 245, 0.04)',
-    pressed:         'rgba(244, 244, 245, 0.08)',
+    // Estados (overlays)
+    hover:           'rgba(255, 255, 255, 0.04)',
+    pressed:         'rgba(255, 255, 255, 0.08)',
+  },
+  gradient: {
+    g1:    '#22D3EE',
+    g2:    '#4F8BFF',
+    g3:    '#A855F7',
+    g4:    '#FB7185',
+    stops: ['#22D3EE', '#4F8BFF', '#A855F7', '#FB7185'] as const,
+    soft:  [
+      'rgba(34, 211, 238, 0.16)',
+      'rgba(79, 139, 255, 0.16)',
+      'rgba(168, 85, 247, 0.16)',
+      'rgba(251, 113, 133, 0.16)',
+    ] as const,
   },
 };

@@ -1,12 +1,23 @@
 /**
  * Forma del Theme — fuente única para que dark.ts y el futuro light.ts
- * compartan exactamente las mismas keys. Si añades un token nuevo,
- * añadelo aquí primero.
+ * compartan exactamente las mismas keys.
+ *
+ * Sistema visual: JuanCode (dark futurista premium + degradado de marca).
  */
 
+export interface ThemeGradient {
+  g1: string;
+  g2: string;
+  g3: string;
+  g4: string;
+  stops: readonly [string, string, string, string];
+  soft: readonly [string, string, string, string];
+}
+
 export interface ThemeColors {
-  // Backgrounds y superficies
+  // Backgrounds
   background: string;
+  bg2: string;
   surface: string;
   surfaceRaised: string;
   surfaceElevated: string;
@@ -15,6 +26,7 @@ export interface ThemeColors {
   // Bordes
   border: string;
   borderSubtle: string;
+  borderStrong: string;
   borderFocus: string;
 
   // Texto
@@ -22,30 +34,24 @@ export interface ThemeColors {
   textSecondary: string;
   textTertiary: string;
   textInverse: string;
+  textOnGradient: string;
 
-  // Acento — chrome (plata)
+  // Acento (cian g1 — reemplaza chrome plata)
   chrome: string;
   chromeMuted: string;
   chromeGlow: string;
 
-  // Cards claras sobre fondo dark (spotlight cards over dark stage)
-  cardLight: string;
-  cardLightBorder: string;
-  textOnLight: string;
-  textOnLightSecondary: string;
-
   // CTA
-  ctaPrimary: string;
   ctaPrimaryText: string;
 
-  // Feedback semántico (apagados, salvo emergency)
+  // Feedback semántico
   success: string;
   warning: string;
   danger: string;
   info: string;
   emergency: string;
 
-  // Estados (overlays semitransparentes)
+  // Estados
   hover: string;
   pressed: string;
 }
@@ -53,4 +59,5 @@ export interface ThemeColors {
 export interface Theme {
   mode: 'dark' | 'light';
   colors: ThemeColors;
+  gradient: ThemeGradient;
 }

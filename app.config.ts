@@ -10,9 +10,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   scheme: 'autonomos',
   userInterfaceStyle: 'automatic',
   splash: {
-    image: './assets/images/splash.png',
+    image: './image/logo.png',
     resizeMode: 'contain',
-    backgroundColor: '#0B1C3D',
+    backgroundColor: '#070A12',
   },
   ios: {
     supportsTablet: true,
