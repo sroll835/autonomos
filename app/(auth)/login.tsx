@@ -160,8 +160,8 @@ const styles = StyleSheet.create({
     marginBottom: spacing.xl,
   },
   logo: {
-    width: 260,
-    height: 64,
+    width: '100%',
+    height: 160,
   },
   headingBlock: {
     marginBottom: spacing.xl,
